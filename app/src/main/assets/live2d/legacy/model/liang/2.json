@@ -1,0 +1,150 @@
+{
+  "version": "Sample 1.0.0",
+  "model": "moc/aoba.moc",
+  "textures": [
+    "moc/aoba2048/texture_00.png"
+  ],
+  "physics": "json/physics.json",
+  "pose": "json/pose.json",
+  "layout": {
+    "width": 2.7,
+    "center_x": 0,
+    "center_y": -0.28
+  },
+  "hit_areas": [
+    {
+      "name": "head",
+      "id": "D_REF.PT_HEAD"
+    },
+    {
+      "name": "body",
+      "id": "D_REF.PT_BODY"
+    }
+  ],
+  "motions": {
+    "idle": [
+      {
+        "file": "mtn/aoba_live2D_idle.mtn"
+      }
+    ],
+    "tap_head": [
+      {
+        "file": "mtn/aoba_live2D_01.mtn",
+        "msg_id": "1"
+      },
+      {
+        "file": "mtn/aoba_live2D_02.mtn",
+        "msg_id": "2"
+      },
+      {
+        "file": "mtn/aoba_live2D_03.mtn",
+        "msg_id": "3"
+      },
+      {
+        "file": "mtn/aoba_live2D_04.mtn",
+        "msg_id": "4"
+      },
+      {
+        "file": "mtn/aoba_live2D_05.mtn",
+        "msg_id": "5"
+      },
+      {
+        "file": "mtn/aoba_live2D_06.mtn",
+        "msg_id": "6"
+      },
+      {
+        "file": "mtn/aoba_live2D_07.mtn",
+        "msg_id": "7"
+      },
+      {
+        "file": "mtn/aoba_live2D_08.mtn",
+        "msg_id": "8"
+      },
+      {
+        "file": "mtn/aoba_live2D_09.mtn",
+        "msg_id": "9"
+      },
+      {
+        "file": "mtn/aoba_live2D_10.mtn",
+        "msg_id": "10"
+      },
+      {
+        "file": "mtn/aoba_live2D_27.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_28.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_29.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_30.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_31.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_32.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_33.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_34.mtn"
+      }
+    ],
+    "tap_body": [
+      {
+        "file": "mtn/aoba_live2D_11.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_12.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_13.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_14.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_15.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_16.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_17.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_18.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_19.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_20.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_22.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_23.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_24.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_25.mtn"
+      },
+      {
+        "file": "mtn/aoba_live2D_26.mtn"
+      }
+    ],
+    "shake": [
+      {
+        "file": "mtn/aoba_live2D_21.mtn"
+      }
+    ],
+    "new_msg": []
+  }
+}

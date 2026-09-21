@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg">#0B1115</color>
+    <color name="surface">#121C22</color>
+    <color name="surface_high">#1A282F</color>
+    <color name="accent">#33D6C8</color>
+    <color name="accent_dark">#168C87</color>
+    <color name="text_primary">#E7F3F4</color>
+    <color name="text_secondary">#8FA9AD</color>
+    <color name="warning">#FFB85C</color>
+    <color name="divider">#294047</color>
+    <color name="icon_background">#0B1115</color>
+    <color name="avatar_stage">#263E49</color>
+</resources>

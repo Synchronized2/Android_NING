@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
+
+        <Button
+            android:id="@+id/closePreviewButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/surface_high"
+            android:text="@string/close"
+            android:textColor="@color/text_primary" />
+
+        <Button
+            android:id="@+id/previousImageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="6dp"
+            android:backgroundTint="@color/surface_high"
+            android:contentDescription="@string/previous_image"
+            android:text="@string/previous_image_symbol"
+            android:textColor="@color/text_primary"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/imagePositionText"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/nextImageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="6dp"
+            android:backgroundTint="@color/surface_high"
+            android:contentDescription="@string/next_image"
+            android:text="@string/next_image_symbol"
+            android:textColor="@color/text_primary"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/downloadPreviewButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:backgroundTint="@color/surface_high"
+            android:text="@string/download"
+            android:textColor="@color/accent" />
+    </LinearLayout>
+
+    <cloud.pcie.openaiq.ZoomImageView
+        android:id="@+id/fullImageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:contentDescription="@string/generated_image" />
+</LinearLayout>

@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="28dp"
+            android:text="@string/title_settings"
+            android:textColor="@color/text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/connection_title"
+            android:textColor="@color/text_primary"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/use_same_service"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="@string/use_same_service_summary"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <Switch
+                android:id="@+id/sameServiceSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:contentDescription="@string/use_same_service" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/divider" />
+
+        <LinearLayout
+            android:id="@+id/sharedConnectionContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView style="@style/NINGLabel" android:text="@string/base_url" />
+            <EditText
+                android:id="@+id/sharedBaseUrlInput"
+                style="@style/NINGInput"
+                android:hint="@string/base_url_hint"
+                android:importantForAutofill="no"
+                android:inputType="textUri" />
+
+            <TextView style="@style/NINGLabel" android:text="@string/api_key" />
+            <EditText
+                android:id="@+id/sharedApiKeyInput"
+                style="@style/NINGInput"
+                android:hint="@string/api_key_hint"
+                android:importantForAutofill="no"
+                android:inputType="textPassword" />
+
+            <CheckBox
+                android:id="@+id/sharedShowKeyCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/accent"
+                android:text="@string/unlock_and_show_key"
+                android:textColor="@color/text_secondary" />
+
+            <Button
+                android:id="@+id/sharedFetchModelsButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/surface_high"
+                android:text="@string/fetch_models"
+                android:textColor="@color/accent" />
+
+            <TextView
+                android:id="@+id/sharedModelsStatusText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:minHeight="20dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+            <TextView style="@style/NINGLabel" android:text="@string/chat_model" />
+            <Spinner
+                android:id="@+id/sharedChatModelSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_spinner"
+                android:dropDownWidth="match_parent"
+                android:paddingEnd="42dp"
+                android:popupBackground="@color/surface_high"
+                android:spinnerMode="dropdown" />
+
+            <TextView style="@style/NINGLabel" android:text="@string/image_model" />
+            <Spinner
+                android:id="@+id/sharedImageModelSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_spinner"
+                android:dropDownWidth="match_parent"
+                android:paddingEnd="42dp"
+                android:popupBackground="@color/surface_high"
+                android:spinnerMode="dropdown" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/separateConnectionContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/chat_service"
+                android:textColor="@color/accent"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView style="@style/NINGLabel" android:text="@string/base_url" />
+            <EditText
+                android:id="@+id/chatBaseUrlInput"
+                style="@style/NINGInput"
+                android:hint="@string/base_url_hint"
+                android:importantForAutofill="no"
+                android:inputType="textUri" />
+
+            <TextView style="@style/NINGLabel" android:text="@string/api_key" />
+            <EditText
+                android:id="@+id/chatApiKeyInput"
+                style="@style/NINGInput"
+                android:hint="@string/api_key_hint"
+                android:importantForAutofill="no"
+                android:inputType="textPassword" />
+
+            <CheckBox
+                android:id="@+id/chatShowKeyCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/accent"
+                android:text="@string/unlock_and_show_key"
+                android:textColor="@color/text_secondary" />
+
+            <Button
+                android:id="@+id/chatFetchModelsButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/surface_high"
+                android:text="@string/fetch_chat_models"
+                android:textColor="@color/accent" />
+
+            <TextView
+                android:id="@+id/chatModelsStatusText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:minHeight="20dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+            <TextView style="@style/NINGLabel" android:text="@string/chat_model" />
+            <Spinner
+                android:id="@+id/chatModelSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_spinner"
+                android:dropDownWidth="match_parent"
+                android:paddingEnd="42dp"
+                android:popupBackground="@color/surface_high"
+                android:spinnerMode="dropdown" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/image_service"
+                android:textColor="@color/accent"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView style="@style/NINGLabel" android:text="@string/base_url" />
+            <EditText
+                android:id="@+id/imageBaseUrlInput"
+                style="@style/NINGInput"
+                android:hint="@string/base_url_hint"
+                android:importantForAutofill="no"
+                android:inputType="textUri" />
+
+            <TextView style="@style/NINGLabel" android:text="@string/api_key" />
+            <EditText
+                android:id="@+id/imageApiKeyInput"
+                style="@style/NINGInput"
+                android:hint="@string/api_key_hint"
+                android:importantForAutofill="no"
+                android:inputType="textPassword" />
+
+            <CheckBox
+                android:id="@+id/imageShowKeyCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/accent"
+                android:text="@string/unlock_and_show_key"
+                android:textColor="@color/text_secondary" />
+
+            <Button
+                android:id="@+id/imageFetchModelsButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/surface_high"
+                android:text="@string/fetch_image_models"
+                android:textColor="@color/accent" />
+
+            <TextView
+                android:id="@+id/imageModelsStatusText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:minHeight="20dp"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+
+            <TextView style="@style/NINGLabel" android:text="@string/image_model" />
+            <Spinner
+                android:id="@+id/imageModelSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_spinner"
+                android:dropDownWidth="match_parent"
+                android:paddingEnd="42dp"
+                android:popupBackground="@color/surface_high"
+                android:spinnerMode="dropdown" />
+        </LinearLayout>
+
+        <TextView style="@style/NINGLabel" android:text="@string/system_prompt" />
+        <EditText
+            android:id="@+id/systemPromptInput"
+            style="@style/NINGInput"
+            android:gravity="top|start"
+            android:hint="@string/system_prompt_hint"
+            android:importantForAutofill="no"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLines="5"
+            android:minHeight="104dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/tts_title"
+            android:textColor="@color/text_primary"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <CheckBox
+            android:id="@+id/autoSpeakCheck"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:buttonTint="@color/accent"
+            android:text="@string/auto_speak"
+            android:textColor="@color/text_primary" />
+
+        <TextView style="@style/NINGLabel" android:text="@string/tts_voice" />
+        <Spinner
+            android:id="@+id/ttsVoiceSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_spinner"
+            android:dropDownWidth="match_parent"
+            android:paddingEnd="42dp"
+            android:popupBackground="@color/surface_high"
+            android:spinnerMode="dropdown" />
+
+        <TextView style="@style/NINGLabel" android:text="@string/tts_style" />
+        <Spinner
+            android:id="@+id/ttsStyleSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_spinner"
+            android:dropDownWidth="match_parent"
+            android:paddingEnd="42dp"
+            android:popupBackground="@color/surface_high"
+            android:spinnerMode="dropdown" />
+
+        <Button
+            android:id="@+id/refreshTtsVoicesButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/surface_high"
+            android:text="@string/refresh_tts_voices"
+            android:textColor="@color/accent" />
+
+        <TextView
+            android:id="@+id/ttsStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:minHeight="20dp"
+            android:text="@string/tts_curated_note"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/ttsRateLabel"
+            style="@style/NINGLabel"
+            android:text="@string/tts_rate" />
+        <SeekBar
+            android:id="@+id/ttsRateSeek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="300"
+            android:progressTint="@color/accent"
+            android:thumbTint="@color/accent" />
+
+        <TextView
+            android:id="@+id/ttsVolumeLabel"
+            style="@style/NINGLabel"
+            android:text="@string/tts_volume" />
+        <SeekBar
+            android:id="@+id/ttsVolumeSeek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="200"
+            android:progressTint="@color/accent"
+            android:thumbTint="@color/accent" />
+
+        <TextView
+            android:id="@+id/ttsPitchLabel"
+            style="@style/NINGLabel"
+            android:text="@string/tts_pitch" />
+        <SeekBar
+            android:id="@+id/ttsPitchSeek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="200"
+            android:progressTint="@color/accent"
+            android:thumbTint="@color/accent" />
+
+        <Button
+            android:id="@+id/ttsPreviewButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/surface_high"
+            android:text="@string/tts_preview"
+            android:textColor="@color/accent" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/tts_note"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/avatar_settings"
+            android:textColor="@color/text_primary"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <CheckBox
+            android:id="@+id/avatarEnabledCheck"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:buttonTint="@color/accent"
+            android:text="@string/avatar_enabled"
+            android:textColor="@color/text_primary" />
+
+        <TextView
+            android:id="@+id/avatarSelectionText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/manageAvatarsButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/surface_high"
+            android:text="@string/manage_avatars"
+            android:textColor="@color/accent" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/settings_note"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cancelButton"
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:backgroundTint="@color/surface_high"
+                android:text="@string/cancel"
+                android:textColor="@color/text_secondary" />
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="104dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/bg_button"
+                android:text="@string/save"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

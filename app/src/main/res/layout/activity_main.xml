@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="14dp"
+        android:paddingEnd="10dp">
+
+        <TextView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_n_mark"
+            android:gravity="center"
+            android:text="N"
+            android:textColor="@color/bg"
+            android:textSize="21sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/titleSettingsButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="11dp"
+            android:layout_weight="1"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:contentDescription="@string/open_settings"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_chat"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/activeModelText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/historyButton"
+            android:layout_width="62dp"
+            android:layout_height="44dp"
+            android:backgroundTint="@color/surface_high"
+            android:minWidth="0dp"
+            android:padding="0dp"
+            android:text="@string/conversation_history"
+            android:textAllCaps="false"
+            android:textColor="@color/accent"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/newConversationButton"
+            android:layout_width="62dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="5dp"
+            android:backgroundTint="@color/surface_high"
+            android:minWidth="0dp"
+            android:padding="0dp"
+            android:text="@string/new_conversation"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="14dp"
+        android:paddingTop="7dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="7dp">
+
+        <Button
+            android:id="@+id/chatButton"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/accent_dark"
+            android:minHeight="0dp"
+            android:text="@string/chat_action"
+            android:textAllCaps="false"
+            android:textColor="@color/text_primary"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/imageButton"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="6dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/surface"
+            android:minHeight="0dp"
+            android:text="@string/image_action"
+            android:textAllCaps="false"
+            android:textColor="@color/text_secondary"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/avatarStage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/avatar_stage">
+
+        <cloud.pcie.openaiq.Live2DAvatarView
+            android:id="@+id/live2dAvatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/live2d_avatar" />
+
+        <TextView
+            android:id="@+id/avatarStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_status_pill"
+            android:paddingStart="10dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="5dp"
+            android:text="@string/avatar_loading"
+            android:textColor="@color/text_primary"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:id="@+id/avatarDialog"
+            android:layout_width="168dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="58dp"
+            android:layout_marginEnd="14dp"
+            android:background="@drawable/bg_avatar_dialog"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/avatarDialogRole"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/accent"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/avatarDialogText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="5"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/viewToggleButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="14dp"
+            android:layout_marginBottom="132dp"
+            android:background="@drawable/bg_view_toggle"
+            android:contentDescription="@string/switch_to_full_body"
+            android:padding="12dp"
+            android:src="@drawable/ic_avatar_full"
+            android:tint="@color/surface_high" />
+
+        <LinearLayout
+            android:id="@+id/voiceControls"
+            android:layout_width="match_parent"
+            android:layout_height="118dp"
+            android:layout_gravity="bottom"
+            android:background="@color/bg"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="6dp"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/voiceStatusText"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:text="@string/tap_to_talk"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="76dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/keyboardButton"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:background="@drawable/bg_voice_side_button"
+                    android:contentDescription="@string/use_keyboard"
+                    android:padding="14dp"
+                    android:src="@drawable/ic_keyboard"
+                    android:tint="@color/text_primary" />
+
+                <ImageButton
+                    android:id="@+id/voiceButton"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginStart="62dp"
+                    android:layout_marginEnd="62dp"
+                    android:background="@drawable/bg_voice_button"
+                    android:contentDescription="@string/start_voice_chat"
+                    android:padding="16dp"
+                    android:src="@drawable/ic_mic"
+                    android:tint="@color/bg" />
+
+                <ImageButton
+                    android:id="@+id/audioActionButton"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:background="@drawable/bg_voice_side_button"
+                    android:contentDescription="@string/read_latest_reply"
+                    android:padding="14dp"
+                    android:src="@drawable/ic_sound_on"
+                    android:tint="@color/accent" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" />
+
+    <ListView
+        android:id="@+id/messageList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:listSelector="@android:color/transparent"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:stackFromBottom="true"
+        android:transcriptMode="normal" />
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="22dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="@color/text_secondary"
+        android:textSize="11sp" />
+
+    <LinearLayout
+        android:id="@+id/attachmentBar"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/attachmentPreview"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:contentDescription="@string/image"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/attachmentText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:ellipsize="middle"
+            android:maxLines="1"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/removeAttachmentButton"
+            android:layout_width="58dp"
+            android:layout_height="42dp"
+            android:backgroundTint="@color/surface_high"
+            android:minWidth="0dp"
+            android:text="@string/remove"
+            android:textAllCaps="false"
+            android:textColor="@color/warning" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/composerRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingTop="7dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="11dp">
+
+        <Button
+            android:id="@+id/attachmentButton"
+            android:layout_width="48dp"
+            android:layout_height="52dp"
+            android:backgroundTint="@color/surface_high"
+            android:contentDescription="@string/add_reference_image"
+            android:minWidth="0dp"
+            android:padding="0dp"
+            android:text="@string/add"
+            android:textColor="@color/accent"
+            android:textSize="24sp" />
+
+        <ImageButton
+            android:id="@+id/voiceModeButton"
+            android:layout_width="48dp"
+            android:layout_height="52dp"
+            android:backgroundTint="@color/surface_high"
+            android:contentDescription="@string/return_to_voice"
+            android:padding="13dp"
+            android:src="@drawable/ic_mic"
+            android:tint="@color/accent"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/messageInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_input"
+            android:gravity="top|start"
+            android:hint="@string/message_hint"
+            android:importantForAutofill="no"
+            android:inputType="textCapSentences|textMultiLine"
+            android:maxLines="5"
+            android:minHeight="52dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="64dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="7dp"
+            android:backgroundTint="@color/accent"
+            android:minWidth="0dp"
+            android:text="@string/send"
+            android:textAllCaps="false"
+            android:textColor="@color/bg"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,2524 @@
+[
+  {
+    "id": "hiyori",
+    "name": "日和 · Hiyori",
+    "family": "默认角色",
+    "generation": 3,
+    "model": "models/hiyori/model.moc3",
+    "textures": [
+      "models/hiyori/texture-0.png",
+      "models/hiyori/texture-1.png"
+    ],
+    "preview": "models/hiyori/preview.jpg",
+    "poseGroups": [
+      [
+        {
+          "id": "PartArmA",
+          "links": []
+        },
+        {
+          "id": "PartArmB",
+          "links": []
+        }
+      ]
+    ]
+  },
+  {
+    "id": "local-57e8504a0d5b",
+    "name": "Zara",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-57e8504a0d5b/model.moc3",
+    "textures": [
+      "models/local-57e8504a0d5b/texture-0.png"
+    ],
+    "preview": "models/local-57e8504a0d5b/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-85f25624f5c3",
+    "name": "Atago (Midsummer March)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-85f25624f5c3/model.moc3",
+    "textures": [
+      "models/local-85f25624f5c3/texture-0.png"
+    ],
+    "preview": "models/local-85f25624f5c3/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-39b7c0bcd154",
+    "name": "Eldridge (New Year's Handholding)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-39b7c0bcd154/model.moc3",
+    "textures": [
+      "models/local-39b7c0bcd154/texture-0.png"
+    ],
+    "preview": "models/local-39b7c0bcd154/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-65a9b84ee619",
+    "name": "Eldridge",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-65a9b84ee619/model.moc3",
+    "textures": [
+      "models/local-65a9b84ee619/texture-0.png",
+      "models/local-65a9b84ee619/texture-1.png"
+    ],
+    "preview": "models/local-65a9b84ee619/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-a52bbb186d1c",
+    "name": "Emile Bertin (Côte d'Azur)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-a52bbb186d1c/model.moc3",
+    "textures": [
+      "models/local-a52bbb186d1c/texture-0.png",
+      "models/local-a52bbb186d1c/texture-1.png"
+    ],
+    "preview": "models/local-a52bbb186d1c/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-ed37f140f327",
+    "name": "Centaur (Undine of the Beach)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-ed37f140f327/model.moc3",
+    "textures": [
+      "models/local-ed37f140f327/texture-0.png"
+    ],
+    "preview": "models/local-ed37f140f327/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-9576dfc57483",
+    "name": "Belfast (Iridescent Rose)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-9576dfc57483/model.moc3",
+    "textures": [
+      "models/local-9576dfc57483/texture-0.png"
+    ],
+    "preview": "models/local-9576dfc57483/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-6de22b43ba65",
+    "name": "Javelin",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-6de22b43ba65/model.moc3",
+    "textures": [
+      "models/local-6de22b43ba65/texture-0.png",
+      "models/local-6de22b43ba65/texture-1.png",
+      "models/local-6de22b43ba65/texture-2.png",
+      "models/local-6de22b43ba65/texture-3.png",
+      "models/local-6de22b43ba65/texture-4.png",
+      "models/local-6de22b43ba65/texture-5.png",
+      "models/local-6de22b43ba65/texture-6.png"
+    ],
+    "preview": "models/local-6de22b43ba65/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-6664508bf153",
+    "name": "Javelin (Beach Picnic!)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-6664508bf153/model.moc3",
+    "textures": [
+      "models/local-6664508bf153/texture-0.png"
+    ],
+    "preview": "models/local-6664508bf153/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-0167e0df5d0c",
+    "name": "Bismarck (Majesty of the Ironblood) · 备用配置",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-0167e0df5d0c/model.moc3",
+    "textures": [
+      "models/local-0167e0df5d0c/texture-0.png"
+    ],
+    "preview": "models/local-0167e0df5d0c/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-73b9a40dbffb",
+    "name": "Bismarck (Majesty of the Ironblood)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-73b9a40dbffb/model.moc3",
+    "textures": [
+      "models/local-73b9a40dbffb/texture-0.png"
+    ],
+    "preview": "models/local-73b9a40dbffb/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-c4a3396d23ff",
+    "name": "Fubuki (Music Pixy)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-c4a3396d23ff/model.moc3",
+    "textures": [
+      "models/local-c4a3396d23ff/texture-0.png"
+    ],
+    "preview": "models/local-c4a3396d23ff/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-e42d6d8467a8",
+    "name": "Taihou (Forbidden Feast)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-e42d6d8467a8/model.moc3",
+    "textures": [
+      "models/local-e42d6d8467a8/texture-0.png"
+    ],
+    "preview": "models/local-e42d6d8467a8/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-b7c43e4a16f4",
+    "name": "Deutschland (Service Time?!)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-b7c43e4a16f4/model.moc3",
+    "textures": [
+      "models/local-b7c43e4a16f4/texture-0.png",
+      "models/local-b7c43e4a16f4/texture-1.png"
+    ],
+    "preview": "models/local-b7c43e4a16f4/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-e41a0c815c71",
+    "name": "Unicorn (Amusement Park Date)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-e41a0c815c71/model.moc3",
+    "textures": [
+      "models/local-e41a0c815c71/texture-0.png"
+    ],
+    "preview": "models/local-e41a0c815c71/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-6d946c3fe9b2",
+    "name": "Dunkerque (Summer Sucré)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-6d946c3fe9b2/model.moc3",
+    "textures": [
+      "models/local-6d946c3fe9b2/texture-0.png"
+    ],
+    "preview": "models/local-6d946c3fe9b2/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-873b66308316",
+    "name": "Gneisenau",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-873b66308316/model.moc3",
+    "textures": [
+      "models/local-873b66308316/texture-0.png"
+    ],
+    "preview": "models/local-873b66308316/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-c44404b509f7",
+    "name": "Black Prince",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-c44404b509f7/model.moc3",
+    "textures": [
+      "models/local-c44404b509f7/texture-0.png"
+    ],
+    "preview": "models/local-c44404b509f7/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-08e25ef9dbeb",
+    "name": "Ark Royal (Banquet Guardian)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-08e25ef9dbeb/model.moc3",
+    "textures": [
+      "models/local-08e25ef9dbeb/texture-0.png"
+    ],
+    "preview": "models/local-08e25ef9dbeb/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-477171b17dd0",
+    "name": "Honolulu (Summer Accident?!)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-477171b17dd0/model.moc3",
+    "textures": [
+      "models/local-477171b17dd0/texture-0.png"
+    ],
+    "preview": "models/local-477171b17dd0/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-e2f2fb017aef",
+    "name": "Honolulu",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-e2f2fb017aef/model.moc3",
+    "textures": [
+      "models/local-e2f2fb017aef/texture-0.png"
+    ],
+    "preview": "models/local-e2f2fb017aef/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-0e6f0b5dd556",
+    "name": "Cleveland (Gentry Knight)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-0e6f0b5dd556/model.moc3",
+    "textures": [
+      "models/local-0e6f0b5dd556/texture-0.png"
+    ],
+    "preview": "models/local-0e6f0b5dd556/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-a60b422bcd02",
+    "name": "Laffey",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-a60b422bcd02/model.moc3",
+    "textures": [
+      "models/local-a60b422bcd02/texture-0.png",
+      "models/local-a60b422bcd02/texture-1.png",
+      "models/local-a60b422bcd02/texture-2.png",
+      "models/local-a60b422bcd02/texture-3.png",
+      "models/local-a60b422bcd02/texture-4.png",
+      "models/local-a60b422bcd02/texture-5.png"
+    ],
+    "preview": "models/local-a60b422bcd02/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-aab083d2d00a",
+    "name": "Laffey (New Year Rabbit)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-aab083d2d00a/model.moc3",
+    "textures": [
+      "models/local-aab083d2d00a/texture-0.png"
+    ],
+    "preview": "models/local-aab083d2d00a/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-29ba1afcca6a",
+    "name": "Ayanami",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-29ba1afcca6a/model.moc3",
+    "textures": [
+      "models/local-29ba1afcca6a/texture-0.png",
+      "models/local-29ba1afcca6a/texture-1.png",
+      "models/local-29ba1afcca6a/texture-2.png",
+      "models/local-29ba1afcca6a/texture-3.png"
+    ],
+    "preview": "models/local-29ba1afcca6a/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-6227504486bb",
+    "name": "Akashi",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-6227504486bb/model.moc3",
+    "textures": [
+      "models/local-6227504486bb/texture-0.png"
+    ],
+    "preview": "models/local-6227504486bb/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-34b8be351ff4",
+    "name": "Ning Hai",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-34b8be351ff4/model.moc3",
+    "textures": [
+      "models/local-34b8be351ff4/texture-0.png"
+    ],
+    "preview": "models/local-34b8be351ff4/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-7342b5d7c248",
+    "name": "Ping Hai",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-7342b5d7c248/model.moc3",
+    "textures": [
+      "models/local-7342b5d7c248/texture-0.png"
+    ],
+    "preview": "models/local-7342b5d7c248/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-966ad8a3afd8",
+    "name": "Graf Zeppelin (Beachside Urd)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-966ad8a3afd8/model.moc3",
+    "textures": [
+      "models/local-966ad8a3afd8/texture-0.png",
+      "models/local-966ad8a3afd8/texture-1.png"
+    ],
+    "preview": "models/local-966ad8a3afd8/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-5a9f85678090",
+    "name": "St. Louis (Splendor of Spring)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-5a9f85678090/model.moc3",
+    "textures": [
+      "models/local-5a9f85678090/texture-0.png",
+      "models/local-5a9f85678090/texture-1.png"
+    ],
+    "preview": "models/local-5a9f85678090/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-7994dec357ce",
+    "name": "Admiral Graf Spee",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-7994dec357ce/model.moc3",
+    "textures": [
+      "models/local-7994dec357ce/texture-0.png"
+    ],
+    "preview": "models/local-7994dec357ce/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-0d72a7046dfc",
+    "name": "Tai Yuan (Clamorous Tortoise)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-0d72a7046dfc/model.moc3",
+    "textures": [
+      "models/local-0d72a7046dfc/texture-0.png",
+      "models/local-0d72a7046dfc/texture-1.png"
+    ],
+    "preview": "models/local-0d72a7046dfc/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-3ddd849e3a8a",
+    "name": "Sirius (Midsummer Seirios)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-3ddd849e3a8a/model.moc3",
+    "textures": [
+      "models/local-3ddd849e3a8a/texture-0.png"
+    ],
+    "preview": "models/local-3ddd849e3a8a/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-534e67321374",
+    "name": "Tirpitz (Snow-melting Summer)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-534e67321374/model.moc3",
+    "textures": [
+      "models/local-534e67321374/texture-0.png",
+      "models/local-534e67321374/texture-1.png"
+    ],
+    "preview": "models/local-534e67321374/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-45708538a547",
+    "name": "Shōkaku",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-45708538a547/model.moc3",
+    "textures": [
+      "models/local-45708538a547/texture-0.png"
+    ],
+    "preview": "models/local-45708538a547/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-b7e047abf804",
+    "name": "Vampire",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-b7e047abf804/model.moc3",
+    "textures": [
+      "models/local-b7e047abf804/texture-0.png"
+    ],
+    "preview": "models/local-b7e047abf804/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-84c65202f41f",
+    "name": "Yukikaze",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-84c65202f41f/model.moc3",
+    "textures": [
+      "models/local-84c65202f41f/texture-0.png",
+      "models/local-84c65202f41f/texture-1.png",
+      "models/local-84c65202f41f/texture-2.png",
+      "models/local-84c65202f41f/texture-3.png",
+      "models/local-84c65202f41f/texture-4.png",
+      "models/local-84c65202f41f/texture-5.png"
+    ],
+    "preview": "models/local-84c65202f41f/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-59b4b716ec60",
+    "name": "Ibuki (Wish of a Snow Goddess)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-59b4b716ec60/model.moc3",
+    "textures": [
+      "models/local-59b4b716ec60/texture-0.png"
+    ],
+    "preview": "models/local-59b4b716ec60/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-fa1e2c564c99",
+    "name": "Z23",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-fa1e2c564c99/model.moc3",
+    "textures": [
+      "models/local-fa1e2c564c99/texture-0.png",
+      "models/local-fa1e2c564c99/texture-1.png",
+      "models/local-fa1e2c564c99/texture-2.png",
+      "models/local-fa1e2c564c99/texture-3.png",
+      "models/local-fa1e2c564c99/texture-4.png"
+    ],
+    "preview": "models/local-fa1e2c564c99/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-23d4a69218d5",
+    "name": "Z46 (First Summer)",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/local-23d4a69218d5/model.moc3",
+    "textures": [
+      "models/local-23d4a69218d5/texture-0.png",
+      "models/local-23d4a69218d5/texture-1.png"
+    ],
+    "preview": "models/local-23d4a69218d5/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "l2d-models-615c42add339-4e5439bce8f7",
+    "name": "abeikelongbi_3",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/l2d-models-615c42add339-4e5439bce8f7/model.moc3",
+    "textures": [
+      "models/l2d-models-615c42add339-4e5439bce8f7/texture-0.png"
+    ],
+    "preview": "models/l2d-models-615c42add339-4e5439bce8f7/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "l2d-models-615c42add339-68ab616026f4",
+    "name": "Haru",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/l2d-models-615c42add339-68ab616026f4/model.moc3",
+    "textures": [
+      "models/l2d-models-615c42add339-68ab616026f4/texture-0.png",
+      "models/l2d-models-615c42add339-68ab616026f4/texture-1.png"
+    ],
+    "preview": "models/l2d-models-615c42add339-68ab616026f4/preview.png",
+    "poseGroups": [
+      [
+        {
+          "id": "Part01ArmRA001",
+          "links": []
+        },
+        {
+          "id": "Part01ArmRB001",
+          "links": []
+        }
+      ],
+      [
+        {
+          "id": "Part01ArmLA001",
+          "links": []
+        },
+        {
+          "id": "Part01ArmLB001",
+          "links": []
+        }
+      ]
+    ]
+  },
+  {
+    "id": "l2d-models-615c42add339-bc879545841d",
+    "name": "Hiyori",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/l2d-models-615c42add339-bc879545841d/model.moc3",
+    "textures": [
+      "models/l2d-models-615c42add339-bc879545841d/texture-0.png",
+      "models/l2d-models-615c42add339-bc879545841d/texture-1.png"
+    ],
+    "preview": "models/l2d-models-615c42add339-bc879545841d/preview.png",
+    "poseGroups": [
+      [
+        {
+          "id": "PartArmA",
+          "links": []
+        },
+        {
+          "id": "PartArmB",
+          "links": []
+        }
+      ]
+    ]
+  },
+  {
+    "id": "l2d-models-615c42add339-d5e20b8e69ef",
+    "name": "Mao",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/l2d-models-615c42add339-d5e20b8e69ef/model.moc3",
+    "textures": [
+      "models/l2d-models-615c42add339-d5e20b8e69ef/texture-0.png"
+    ],
+    "preview": "models/l2d-models-615c42add339-d5e20b8e69ef/preview.png",
+    "poseGroups": [
+      [
+        {
+          "id": "PartArmLA",
+          "links": []
+        },
+        {
+          "id": "PartArmLB",
+          "links": []
+        }
+      ],
+      [
+        {
+          "id": "PartArmRA",
+          "links": []
+        },
+        {
+          "id": "PartArmRB",
+          "links": []
+        }
+      ]
+    ]
+  },
+  {
+    "id": "l2d-models-615c42add339-5ccff8b47908",
+    "name": "Mark",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/l2d-models-615c42add339-5ccff8b47908/model.moc3",
+    "textures": [
+      "models/l2d-models-615c42add339-5ccff8b47908/texture-0.png"
+    ],
+    "preview": "models/l2d-models-615c42add339-5ccff8b47908/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "l2d-models-615c42add339-0e21773e5820",
+    "name": "Natori",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/l2d-models-615c42add339-0e21773e5820/model.moc3",
+    "textures": [
+      "models/l2d-models-615c42add339-0e21773e5820/texture-0.png"
+    ],
+    "preview": "models/l2d-models-615c42add339-0e21773e5820/preview.png",
+    "poseGroups": [
+      [
+        {
+          "id": "PartArmAL",
+          "links": []
+        },
+        {
+          "id": "PartArmCL",
+          "links": []
+        },
+        {
+          "id": "PartArmDL",
+          "links": []
+        }
+      ],
+      [
+        {
+          "id": "PartArmAR",
+          "links": []
+        },
+        {
+          "id": "PartArmBR",
+          "links": []
+        },
+        {
+          "id": "PartArmER",
+          "links": []
+        }
+      ],
+      [
+        {
+          "id": "PartWatchA",
+          "links": []
+        },
+        {
+          "id": "PartWatchB",
+          "links": []
+        }
+      ]
+    ]
+  },
+  {
+    "id": "l2d-models-615c42add339-f93383dab0f7",
+    "name": "Rice",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/l2d-models-615c42add339-f93383dab0f7/model.moc3",
+    "textures": [
+      "models/l2d-models-615c42add339-f93383dab0f7/texture-0.png",
+      "models/l2d-models-615c42add339-f93383dab0f7/texture-1.png"
+    ],
+    "preview": "models/l2d-models-615c42add339-f93383dab0f7/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "l2d-models-615c42add339-a84f7b102e36",
+    "name": "Senko_Normals · senko",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/l2d-models-615c42add339-a84f7b102e36/model.moc3",
+    "textures": [
+      "models/l2d-models-615c42add339-a84f7b102e36/texture-0.png"
+    ],
+    "preview": "models/l2d-models-615c42add339-a84f7b102e36/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "l2d-models-615c42add339-48b359b44310",
+    "name": "Wanko",
+    "family": "碧蓝航线",
+    "generation": 3,
+    "model": "models/l2d-models-615c42add339-48b359b44310/model.moc3",
+    "textures": [
+      "models/l2d-models-615c42add339-48b359b44310/texture-0.png"
+    ],
+    "preview": "models/l2d-models-615c42add339-48b359b44310/preview.png",
+    "poseGroups": []
+  },
+  {
+    "id": "local-de72dce6274e",
+    "name": "miku",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/miku/miku.model.json",
+    "preview": "legacy/previews/local-de72dce6274e.png"
+  },
+  {
+    "id": "local-7811427e85fe",
+    "name": "rem",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/rem/model.json",
+    "preview": "legacy/previews/local-7811427e85fe.png"
+  },
+  {
+    "id": "local-00c9d7630bfd",
+    "name": "shizuku",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/shizuku/shizuku.model.json",
+    "preview": "legacy/previews/local-00c9d7630bfd.png"
+  },
+  {
+    "id": "local-1992a3ccd093",
+    "name": "sagiri",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/sagiri/sagiri.model.json",
+    "preview": "legacy/previews/local-1992a3ccd093.png"
+  },
+  {
+    "id": "local-9e9896ed5941",
+    "name": "haru · haru_01",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/haru/haru_01.model.json",
+    "preview": "legacy/previews/local-9e9896ed5941.png"
+  },
+  {
+    "id": "local-9085ca81c8c4",
+    "name": "Epsilon2.1",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Epsilon2.1/Epsilon2.1.model.json",
+    "preview": "legacy/previews/local-9085ca81c8c4.png"
+  },
+  {
+    "id": "local-02096e690052",
+    "name": "22 · default",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.default.json",
+    "preview": "legacy/previews/local-02096e690052.png"
+  },
+  {
+    "id": "local-fb396eefe0ff",
+    "name": "33 · default",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.default.json",
+    "preview": "legacy/previews/local-fb396eefe0ff.png"
+  },
+  {
+    "id": "local-7d8988e5ced9",
+    "name": "wanko",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/wanko/wanko.model.json",
+    "preview": "legacy/previews/local-7d8988e5ced9.png"
+  },
+  {
+    "id": "local-681c9464f471",
+    "name": "22 · 2016.xmas.1",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2016.xmas.1.json",
+    "preview": "legacy/previews/local-681c9464f471.png"
+  },
+  {
+    "id": "local-df9c9933477e",
+    "name": "22 · 2016.xmas.2",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2016.xmas.2.json",
+    "preview": "legacy/previews/local-df9c9933477e.png"
+  },
+  {
+    "id": "local-d695af19bd92",
+    "name": "22 · 2017.cba-normal",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2017.cba-normal.json",
+    "preview": "legacy/previews/local-d695af19bd92.png"
+  },
+  {
+    "id": "local-d97634db88ff",
+    "name": "22 · 2017.cba-super",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2017.cba-super.json",
+    "preview": "legacy/previews/local-d97634db88ff.png"
+  },
+  {
+    "id": "local-ea08e8b1eec8",
+    "name": "22 · 2017.newyear",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2017.newyear.json",
+    "preview": "legacy/previews/local-ea08e8b1eec8.png"
+  },
+  {
+    "id": "local-55341c77fdbe",
+    "name": "22 · 2017.school",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2017.school.json",
+    "preview": "legacy/previews/local-55341c77fdbe.png"
+  },
+  {
+    "id": "local-5d54517af58f",
+    "name": "22 · 2017.summer.normal.1",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2017.summer.normal.1.json",
+    "preview": "legacy/previews/local-5d54517af58f.png"
+  },
+  {
+    "id": "local-026fe752bb5d",
+    "name": "22 · 2017.summer.normal.2",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2017.summer.normal.2.json",
+    "preview": "legacy/previews/local-026fe752bb5d.png"
+  },
+  {
+    "id": "local-b3cdfade4ddb",
+    "name": "22 · 2017.summer.super.1",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2017.summer.super.1.json",
+    "preview": "legacy/previews/local-b3cdfade4ddb.png"
+  },
+  {
+    "id": "local-2f7bbe3c2e8c",
+    "name": "22 · 2017.summer.super.2",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2017.summer.super.2.json",
+    "preview": "legacy/previews/local-2f7bbe3c2e8c.png"
+  },
+  {
+    "id": "local-5115c5843fee",
+    "name": "22 · 2017.tomo-bukatsu.high",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2017.tomo-bukatsu.high.json",
+    "preview": "legacy/previews/local-5115c5843fee.png"
+  },
+  {
+    "id": "local-cb23c2f88ee0",
+    "name": "22 · 2017.tomo-bukatsu.low",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2017.tomo-bukatsu.low.json",
+    "preview": "legacy/previews/local-cb23c2f88ee0.png"
+  },
+  {
+    "id": "local-6de3dac17c57",
+    "name": "22 · 2017.valley",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2017.valley.json",
+    "preview": "legacy/previews/local-6de3dac17c57.png"
+  },
+  {
+    "id": "local-e5cb8f0d16ef",
+    "name": "22 · 2017.vdays",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2017.vdays.json",
+    "preview": "legacy/previews/local-e5cb8f0d16ef.png"
+  },
+  {
+    "id": "local-8869aa471529",
+    "name": "22 · 2018.bls-summer",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2018.bls-summer.json",
+    "preview": "legacy/previews/local-8869aa471529.png"
+  },
+  {
+    "id": "local-edf201cb98cb",
+    "name": "22 · 2018.bls-winter",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2018.bls-winter.json",
+    "preview": "legacy/previews/local-edf201cb98cb.png"
+  },
+  {
+    "id": "local-53367c09de8d",
+    "name": "22 · 2018.lover",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2018.lover.json",
+    "preview": "legacy/previews/local-53367c09de8d.png"
+  },
+  {
+    "id": "local-f95171fcaf48",
+    "name": "22 · 2018.spring",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22/model.2018.spring.json",
+    "preview": "legacy/previews/local-f95171fcaf48.png"
+  },
+  {
+    "id": "local-4754611e942b",
+    "name": "22_high",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/22_high/model.json",
+    "preview": "legacy/previews/local-4754611e942b.png"
+  },
+  {
+    "id": "local-af7eab806595",
+    "name": "33 · 2016.xmas.1",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2016.xmas.1.json",
+    "preview": "legacy/previews/local-af7eab806595.png"
+  },
+  {
+    "id": "local-1cc8e92d63ca",
+    "name": "33 · 2016.xmas.2",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2016.xmas.2.json",
+    "preview": "legacy/previews/local-1cc8e92d63ca.png"
+  },
+  {
+    "id": "local-01ed646a59bf",
+    "name": "33 · 2017.cba-normal",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2017.cba-normal.json",
+    "preview": "legacy/previews/local-01ed646a59bf.png"
+  },
+  {
+    "id": "local-fdbea06e77f4",
+    "name": "33 · 2017.cba-super",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2017.cba-super.json",
+    "preview": "legacy/previews/local-fdbea06e77f4.png"
+  },
+  {
+    "id": "local-a77fe9117651",
+    "name": "33 · 2017.newyear",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2017.newyear.json",
+    "preview": "legacy/previews/local-a77fe9117651.png"
+  },
+  {
+    "id": "local-2fd73db8e727",
+    "name": "33 · 2017.school",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2017.school.json",
+    "preview": "legacy/previews/local-2fd73db8e727.png"
+  },
+  {
+    "id": "local-e5d1a280c008",
+    "name": "33 · 2017.summer.normal.1",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2017.summer.normal.1.json",
+    "preview": "legacy/previews/local-e5d1a280c008.png"
+  },
+  {
+    "id": "local-28703432e682",
+    "name": "33 · 2017.summer.normal.2",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2017.summer.normal.2.json",
+    "preview": "legacy/previews/local-28703432e682.png"
+  },
+  {
+    "id": "local-9bfdcbab30f5",
+    "name": "33 · 2017.summer.super.1",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2017.summer.super.1.json",
+    "preview": "legacy/previews/local-9bfdcbab30f5.png"
+  },
+  {
+    "id": "local-e5fbd921e84a",
+    "name": "33 · 2017.summer.super.2",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2017.summer.super.2.json",
+    "preview": "legacy/previews/local-e5fbd921e84a.png"
+  },
+  {
+    "id": "local-1dbfc5c73827",
+    "name": "33 · 2017.tomo-bukatsu.high",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2017.tomo-bukatsu.high.json",
+    "preview": "legacy/previews/local-1dbfc5c73827.png"
+  },
+  {
+    "id": "local-dfa0230a239e",
+    "name": "33 · 2017.tomo-bukatsu.low",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2017.tomo-bukatsu.low.json",
+    "preview": "legacy/previews/local-dfa0230a239e.png"
+  },
+  {
+    "id": "local-a47379b829e4",
+    "name": "33 · 2017.valley",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2017.valley.json",
+    "preview": "legacy/previews/local-a47379b829e4.png"
+  },
+  {
+    "id": "local-0327e083152f",
+    "name": "33 · 2017.vdays",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2017.vdays.json",
+    "preview": "legacy/previews/local-0327e083152f.png"
+  },
+  {
+    "id": "local-cf8504242f89",
+    "name": "33 · 2018.bls-summer",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2018.bls-summer.json",
+    "preview": "legacy/previews/local-cf8504242f89.png"
+  },
+  {
+    "id": "local-961e3de66972",
+    "name": "33 · 2018.bls-winter",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2018.bls-winter.json",
+    "preview": "legacy/previews/local-961e3de66972.png"
+  },
+  {
+    "id": "local-b4e6dfd17ec6",
+    "name": "33 · 2018.lover",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2018.lover.json",
+    "preview": "legacy/previews/local-b4e6dfd17ec6.png"
+  },
+  {
+    "id": "local-8e79f265855b",
+    "name": "33 · 2018.spring",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33/model.2018.spring.json",
+    "preview": "legacy/previews/local-8e79f265855b.png"
+  },
+  {
+    "id": "local-d103f5d2ee26",
+    "name": "33_high",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/33_high/model.json",
+    "preview": "legacy/previews/local-d103f5d2ee26.png"
+  },
+  {
+    "id": "local-6f76ebed3dc6",
+    "name": "Alice",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Alice/model.json",
+    "preview": "legacy/previews/local-6f76ebed3dc6.png"
+  },
+  {
+    "id": "local-60368d85cc01",
+    "name": "blanc_classic",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/blanc_classic/index.json",
+    "preview": "legacy/previews/local-60368d85cc01.png"
+  },
+  {
+    "id": "local-d0220dfa40a1",
+    "name": "blanc_normal",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/blanc_normal/index.json",
+    "preview": "legacy/previews/local-d0220dfa40a1.png"
+  },
+  {
+    "id": "local-b4964b4b123b",
+    "name": "blanc_swimwear",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/blanc_swimwear/index.json",
+    "preview": "legacy/previews/local-b4964b4b123b.png"
+  },
+  {
+    "id": "local-982991b0e2f2",
+    "name": "histoire",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/histoire/index.json",
+    "preview": "legacy/previews/local-982991b0e2f2.png"
+  },
+  {
+    "id": "local-54038cd84578",
+    "name": "histoirenohover",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/histoirenohover/index.json",
+    "preview": "legacy/previews/local-54038cd84578.png"
+  },
+  {
+    "id": "local-433bef0384bd",
+    "name": "nepgear",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/nepgear/index.json",
+    "preview": "legacy/previews/local-433bef0384bd.png"
+  },
+  {
+    "id": "local-7c94ee170e4f",
+    "name": "nepgear_extra",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/nepgear_extra/index.json",
+    "preview": "legacy/previews/local-7c94ee170e4f.png"
+  },
+  {
+    "id": "local-c8ef947b2730",
+    "name": "nepgearswim",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/nepgearswim/index.json",
+    "preview": "legacy/previews/local-c8ef947b2730.png"
+  },
+  {
+    "id": "local-5655961e8bc6",
+    "name": "nepmaid",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/nepmaid/index.json",
+    "preview": "legacy/previews/local-5655961e8bc6.png"
+  },
+  {
+    "id": "local-0db364be7671",
+    "name": "nepnep",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/nepnep/index.json",
+    "preview": "legacy/previews/local-0db364be7671.png"
+  },
+  {
+    "id": "local-2a1230ad910a",
+    "name": "nepswim",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/nepswim/index.json",
+    "preview": "legacy/previews/local-2a1230ad910a.png"
+  },
+  {
+    "id": "local-1d168ab09c1d",
+    "name": "neptune_classic",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/neptune_classic/index.json",
+    "preview": "legacy/previews/local-1d168ab09c1d.png"
+  },
+  {
+    "id": "local-f37064a594fb",
+    "name": "neptune_santa",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/neptune_santa/index.json",
+    "preview": "legacy/previews/local-f37064a594fb.png"
+  },
+  {
+    "id": "local-4b69a2587fd7",
+    "name": "noir",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/noir/index.json",
+    "preview": "legacy/previews/local-4b69a2587fd7.png"
+  },
+  {
+    "id": "local-c677f4738e50",
+    "name": "noir_classic",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/noir_classic/index.json",
+    "preview": "legacy/previews/local-c677f4738e50.png"
+  },
+  {
+    "id": "local-e0a4fb25d7ea",
+    "name": "noir_santa",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/noir_santa/index.json",
+    "preview": "legacy/previews/local-e0a4fb25d7ea.png"
+  },
+  {
+    "id": "local-8f261186e1f1",
+    "name": "noireswim",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/noireswim/index.json",
+    "preview": "legacy/previews/local-8f261186e1f1.png"
+  },
+  {
+    "id": "local-4f63cad90476",
+    "name": "vert_classic",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/vert_classic/index.json",
+    "preview": "legacy/previews/local-4f63cad90476.png"
+  },
+  {
+    "id": "local-93743b419aa0",
+    "name": "vert_normal",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/vert_normal/index.json",
+    "preview": "legacy/previews/local-93743b419aa0.png"
+  },
+  {
+    "id": "local-f9dae2b4b16d",
+    "name": "vert_swimwear",
+    "family": "超次元游戏",
+    "generation": 2,
+    "manifest": "legacy/model/HyperdimensionNeptunia/vert_swimwear/index.json",
+    "preview": "legacy/previews/local-f9dae2b4b16d.png"
+  },
+  {
+    "id": "local-85cdafe8a733",
+    "name": "Kobayaxi",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Kobayaxi/Kobayaxi.model.json",
+    "preview": "legacy/previews/local-85cdafe8a733.png"
+  },
+  {
+    "id": "local-d3374d15bb2f",
+    "name": "Pio",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Pio/model.json",
+    "preview": "legacy/previews/local-d3374d15bb2f.png"
+  },
+  {
+    "id": "local-59990ad5a3ab",
+    "name": "Pio · model1",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Pio/model1.json",
+    "preview": "legacy/previews/local-59990ad5a3ab.png"
+  },
+  {
+    "id": "local-44f29798c310",
+    "name": "Pio · model2",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Pio/model2.json",
+    "preview": "legacy/previews/local-44f29798c310.png"
+  },
+  {
+    "id": "local-78c714ec488c",
+    "name": "Pio · model4",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Pio/model4.json",
+    "preview": "legacy/previews/local-78c714ec488c.png"
+  },
+  {
+    "id": "local-910094048d51",
+    "name": "Pio · model5",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Pio/model5.json",
+    "preview": "legacy/previews/local-910094048d51.png"
+  },
+  {
+    "id": "local-b17d1847dc17",
+    "name": "Terisa",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Terisa/model.json",
+    "preview": "legacy/previews/local-b17d1847dc17.png"
+  },
+  {
+    "id": "local-466bb04075ab",
+    "name": "Tia",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Tia/index.json",
+    "preview": "legacy/previews/local-466bb04075ab.png"
+  },
+  {
+    "id": "local-d0defeb18ebd",
+    "name": "Tia · index1",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Tia/index1.json",
+    "preview": "legacy/previews/local-d0defeb18ebd.png"
+  },
+  {
+    "id": "local-9e0957b6ef78",
+    "name": "Tia · index2",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Tia/index2.json",
+    "preview": "legacy/previews/local-9e0957b6ef78.png"
+  },
+  {
+    "id": "local-9b324dcb9c00",
+    "name": "Tia · index3",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Tia/index3.json",
+    "preview": "legacy/previews/local-9b324dcb9c00.png"
+  },
+  {
+    "id": "local-56fff02da9d1",
+    "name": "Tia · index4",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Tia/index4.json",
+    "preview": "legacy/previews/local-56fff02da9d1.png"
+  },
+  {
+    "id": "local-7290c46bcfd9",
+    "name": "Tia · index5",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Tia/index5.json",
+    "preview": "legacy/previews/local-7290c46bcfd9.png"
+  },
+  {
+    "id": "local-53a4694ee230",
+    "name": "Violet · 14",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/Violet/14.json",
+    "preview": "legacy/previews/local-53a4694ee230.png"
+  },
+  {
+    "id": "local-8f9c744ac818",
+    "name": "YuzukiYukari",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/YuzukiYukari/YuzukiYukari.model.json",
+    "preview": "legacy/previews/local-8f9c744ac818.png"
+  },
+  {
+    "id": "local-9d0c3a352ac7",
+    "name": "bronya",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/bronya/model.json",
+    "preview": "legacy/previews/local-9d0c3a352ac7.png"
+  },
+  {
+    "id": "local-89398aa4b972",
+    "name": "bronya_1",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/bronya_1/model.json",
+    "preview": "legacy/previews/local-89398aa4b972.png"
+  },
+  {
+    "id": "local-959f38c5d385",
+    "name": "chiaki_kitty",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/chiaki_kitty/chiaki_kitty.model.json",
+    "preview": "legacy/previews/local-959f38c5d385.png"
+  },
+  {
+    "id": "local-b81f9cbe18f6",
+    "name": "chitose",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/chitose/chitose.model.json",
+    "preview": "legacy/previews/local-b81f9cbe18f6.png"
+  },
+  {
+    "id": "local-92b10c8ca50c",
+    "name": "date_16",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/date_16/date_16.model.json",
+    "preview": "legacy/previews/local-92b10c8ca50c.png"
+  },
+  {
+    "id": "local-1d4e47ba8e93",
+    "name": "88type_1809 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/88type_1809/destroy/model.json",
+    "preview": "legacy/previews/local-1d4e47ba8e93.png"
+  },
+  {
+    "id": "local-e9669ee45ebc",
+    "name": "88type_1809 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/88type_1809/normal/model.json",
+    "preview": "legacy/previews/local-e9669ee45ebc.png"
+  },
+  {
+    "id": "local-66553b661182",
+    "name": "95type_405 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/95type_405/destroy/model.json",
+    "preview": "legacy/previews/local-66553b661182.png"
+  },
+  {
+    "id": "local-f5b489690d9b",
+    "name": "95type_405 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/95type_405/normal/model.json",
+    "preview": "legacy/previews/local-f5b489690d9b.png"
+  },
+  {
+    "id": "local-8c3e831aaff9",
+    "name": "ags-30",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/ags-30/model.json",
+    "preview": "legacy/previews/local-8c3e831aaff9.png"
+  },
+  {
+    "id": "local-fb1377ac867c",
+    "name": "armor · model1",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/armor/model1.json",
+    "preview": "legacy/previews/local-fb1377ac867c.png"
+  },
+  {
+    "id": "local-be65b3991c32",
+    "name": "armor · model2",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/armor/model2.json",
+    "preview": "legacy/previews/local-be65b3991c32.png"
+  },
+  {
+    "id": "local-bcefbba4c224",
+    "name": "armor · model3",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/armor/model3.json",
+    "preview": "legacy/previews/local-bcefbba4c224.png"
+  },
+  {
+    "id": "local-69810d752214",
+    "name": "command · model1",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/command/model1.json",
+    "preview": "legacy/previews/local-69810d752214.png"
+  },
+  {
+    "id": "local-30fc26266bc2",
+    "name": "command · model2",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/command/model2.json",
+    "preview": "legacy/previews/local-30fc26266bc2.png"
+  },
+  {
+    "id": "local-001489a0a1a9",
+    "name": "command · model3",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/command/model3.json",
+    "preview": "legacy/previews/local-001489a0a1a9.png"
+  },
+  {
+    "id": "local-c8a5cb59a3ac",
+    "name": "dsr50_1801 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/dsr50_1801/destroy/model.json",
+    "preview": "legacy/previews/local-c8a5cb59a3ac.png"
+  },
+  {
+    "id": "local-e65ee502a66f",
+    "name": "dsr50_1801 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/dsr50_1801/normal/model.json",
+    "preview": "legacy/previews/local-e65ee502a66f.png"
+  },
+  {
+    "id": "local-58e2a332a3da",
+    "name": "dsr50_2101 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/dsr50_2101/destroy/model.json",
+    "preview": "legacy/previews/local-58e2a332a3da.png"
+  },
+  {
+    "id": "local-8632f4fc8a6c",
+    "name": "dsr50_2101 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/dsr50_2101/normal/model.json",
+    "preview": "legacy/previews/local-8632f4fc8a6c.png"
+  },
+  {
+    "id": "local-6043aeaf1cf9",
+    "name": "fn57_2203 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/fn57_2203/destroy/model.json",
+    "preview": "legacy/previews/local-6043aeaf1cf9.png"
+  },
+  {
+    "id": "local-aa6ec213e251",
+    "name": "fn57_2203 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/fn57_2203/normal/model.json",
+    "preview": "legacy/previews/local-aa6ec213e251.png"
+  },
+  {
+    "id": "local-f68ed3c40c57",
+    "name": "fortress · model1",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/fortress/model1.json",
+    "preview": "legacy/previews/local-f68ed3c40c57.png"
+  },
+  {
+    "id": "local-7758aefa3a68",
+    "name": "fortress · model2",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/fortress/model2.json",
+    "preview": "legacy/previews/local-7758aefa3a68.png"
+  },
+  {
+    "id": "local-4cc7eec0e83a",
+    "name": "fortress · model3",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/fortress/model3.json",
+    "preview": "legacy/previews/local-4cc7eec0e83a.png"
+  },
+  {
+    "id": "local-531e6c34f68c",
+    "name": "g36c_1202 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/g36c_1202/destroy/model.json",
+    "preview": "legacy/previews/local-531e6c34f68c.png"
+  },
+  {
+    "id": "local-017abb82ab1b",
+    "name": "g36c_1202 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/g36c_1202/normal/model.json",
+    "preview": "legacy/previews/local-017abb82ab1b.png"
+  },
+  {
+    "id": "local-005d99fb5b9a",
+    "name": "g41_2401 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/g41_2401/destroy/model.json",
+    "preview": "legacy/previews/local-005d99fb5b9a.png"
+  },
+  {
+    "id": "local-dd1b8c877d2d",
+    "name": "g41_2401 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/g41_2401/normal/model.json",
+    "preview": "legacy/previews/local-dd1b8c877d2d.png"
+  },
+  {
+    "id": "local-d5abe19a0531",
+    "name": "gelina · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/gelina/normal/model.json",
+    "preview": "legacy/previews/local-d5abe19a0531.png"
+  },
+  {
+    "id": "local-3eae4d9b6f1b",
+    "name": "golden · model1",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/golden/model1.json",
+    "preview": "legacy/previews/local-3eae4d9b6f1b.png"
+  },
+  {
+    "id": "local-14acbf6e0049",
+    "name": "golden · model2",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/golden/model2.json",
+    "preview": "legacy/previews/local-14acbf6e0049.png"
+  },
+  {
+    "id": "local-a2aac0108482",
+    "name": "golden · model3",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/golden/model3.json",
+    "preview": "legacy/previews/local-a2aac0108482.png"
+  },
+  {
+    "id": "local-35c16f93a516",
+    "name": "grizzly_2102 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/grizzly_2102/destroy/model.json",
+    "preview": "legacy/previews/local-35c16f93a516.png"
+  },
+  {
+    "id": "local-9e274dab9d50",
+    "name": "grizzly_2102 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/grizzly_2102/normal/model.json",
+    "preview": "legacy/previews/local-9e274dab9d50.png"
+  },
+  {
+    "id": "local-8a6de59e1fc3",
+    "name": "hk416_805 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/hk416_805/destroy/model.json",
+    "preview": "legacy/previews/local-8a6de59e1fc3.png"
+  },
+  {
+    "id": "local-07a4fc0a07a8",
+    "name": "hk416_805 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/hk416_805/normal/model.json",
+    "preview": "legacy/previews/local-07a4fc0a07a8.png"
+  },
+  {
+    "id": "local-6a461e49f9e3",
+    "name": "kp31_1103 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/kp31_1103/destroy/model.json",
+    "preview": "legacy/previews/local-6a461e49f9e3.png"
+  },
+  {
+    "id": "local-4ccc4a363692",
+    "name": "kp31_1103 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/kp31_1103/normal/model.json",
+    "preview": "legacy/previews/local-4ccc4a363692.png"
+  },
+  {
+    "id": "local-fc48c9dcc24d",
+    "name": "kp31_3101 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/kp31_3101/destroy/model.json",
+    "preview": "legacy/previews/local-fc48c9dcc24d.png"
+  },
+  {
+    "id": "local-d42f7c383c90",
+    "name": "kp31_3101 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/kp31_3101/normal/model.json",
+    "preview": "legacy/previews/local-d42f7c383c90.png"
+  },
+  {
+    "id": "local-be7216e2d862",
+    "name": "kp31_310 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/kp31_310/destroy/model.json",
+    "preview": "legacy/previews/local-be7216e2d862.png"
+  },
+  {
+    "id": "local-a96bf51b7f95",
+    "name": "kp31_310 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/kp31_310/normal/model.json",
+    "preview": "legacy/previews/local-a96bf51b7f95.png"
+  },
+  {
+    "id": "local-e4c449d6bfb5",
+    "name": "m1928a1_1501 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/m1928a1_1501/destroy/model.json",
+    "preview": "legacy/previews/local-e4c449d6bfb5.png"
+  },
+  {
+    "id": "local-14f92ef26a9b",
+    "name": "m1928a1_1501 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/m1928a1_1501/normal/model.json",
+    "preview": "legacy/previews/local-14f92ef26a9b.png"
+  },
+  {
+    "id": "local-bee1df40b7e9",
+    "name": "mlemk1_604 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/mlemk1_604/destroy/model.json",
+    "preview": "legacy/previews/local-bee1df40b7e9.png"
+  },
+  {
+    "id": "local-a8872fd284c6",
+    "name": "mlemk1_604 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/mlemk1_604/normal/model.json",
+    "preview": "legacy/previews/local-a8872fd284c6.png"
+  },
+  {
+    "id": "local-f552fd272014",
+    "name": "ntw20_2301 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/ntw20_2301/destroy/model.json",
+    "preview": "legacy/previews/local-f552fd272014.png"
+  },
+  {
+    "id": "local-dbc3498d7e37",
+    "name": "ntw20_2301 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/ntw20_2301/normal/model.json",
+    "preview": "legacy/previews/local-dbc3498d7e37.png"
+  },
+  {
+    "id": "local-c9cc3bf7d0a0",
+    "name": "ots14_3001 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/ots14_3001/destroy/model.json",
+    "preview": "legacy/previews/local-c9cc3bf7d0a0.png"
+  },
+  {
+    "id": "local-7e5e8e05c35a",
+    "name": "ots14_3001 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/ots14_3001/normal/model.json",
+    "preview": "legacy/previews/local-7e5e8e05c35a.png"
+  },
+  {
+    "id": "local-716fc74a59e3",
+    "name": "px4storm_2801 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/px4storm_2801/destroy/model.json",
+    "preview": "legacy/previews/local-716fc74a59e3.png"
+  },
+  {
+    "id": "local-e557444e1401",
+    "name": "px4storm_2801 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/px4storm_2801/normal/model.json",
+    "preview": "legacy/previews/local-e557444e1401.png"
+  },
+  {
+    "id": "local-b44b16987692",
+    "name": "rfb_1601 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/rfb_1601/destroy/model.json",
+    "preview": "legacy/previews/local-b44b16987692.png"
+  },
+  {
+    "id": "local-f330997d83f9",
+    "name": "rfb_1601 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/rfb_1601/normal/model.json",
+    "preview": "legacy/previews/local-f330997d83f9.png"
+  },
+  {
+    "id": "local-0602def62ec8",
+    "name": "sat8_2601 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/sat8_2601/destroy/model.json",
+    "preview": "legacy/previews/local-0602def62ec8.png"
+  },
+  {
+    "id": "local-ec54a7901b9a",
+    "name": "sat8_2601 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/sat8_2601/normal/model.json",
+    "preview": "legacy/previews/local-ec54a7901b9a.png"
+  },
+  {
+    "id": "local-3346d646aca7",
+    "name": "shield · model1",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/shield/model1.json",
+    "preview": "legacy/previews/local-3346d646aca7.png"
+  },
+  {
+    "id": "local-b275ff0cf35c",
+    "name": "shield · model2",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/shield/model2.json",
+    "preview": "legacy/previews/local-b275ff0cf35c.png"
+  },
+  {
+    "id": "local-2ac50cfe70ba",
+    "name": "shield · model3",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/shield/model3.json",
+    "preview": "legacy/previews/local-2ac50cfe70ba.png"
+  },
+  {
+    "id": "local-df99ebfa70f0",
+    "name": "type64-ar_2901 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/type64-ar_2901/destroy/model.json",
+    "preview": "legacy/previews/local-df99ebfa70f0.png"
+  },
+  {
+    "id": "local-533ab05f9ad6",
+    "name": "type64-ar_2901 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/type64-ar_2901/normal/model.json",
+    "preview": "legacy/previews/local-533ab05f9ad6.png"
+  },
+  {
+    "id": "local-29824b1283c5",
+    "name": "vector_1901 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/vector_1901/destroy/model.json",
+    "preview": "legacy/previews/local-29824b1283c5.png"
+  },
+  {
+    "id": "local-089902b24556",
+    "name": "vector_1901 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/vector_1901/normal/model.json",
+    "preview": "legacy/previews/local-089902b24556.png"
+  },
+  {
+    "id": "local-25e537898e6d",
+    "name": "wa2000_6 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/wa2000_6/destroy/model.json",
+    "preview": "legacy/previews/local-25e537898e6d.png"
+  },
+  {
+    "id": "local-07fbbbe67e07",
+    "name": "wa2000_6 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/wa2000_6/normal/model.json",
+    "preview": "legacy/previews/local-07fbbbe67e07.png"
+  },
+  {
+    "id": "local-596b6aca0609",
+    "name": "welrod_1401 · 战损",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/welrod_1401/destroy/model.json",
+    "preview": "legacy/previews/local-596b6aca0609.png"
+  },
+  {
+    "id": "local-1a1af5bb0ecb",
+    "name": "welrod_1401 · 常服",
+    "family": "少女前线",
+    "generation": 2,
+    "manifest": "legacy/model/dollsfrontline/welrod_1401/normal/model.json",
+    "preview": "legacy/previews/local-1a1af5bb0ecb.png"
+  },
+  {
+    "id": "local-b007a5e0e357",
+    "name": "fox",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/fox/model.json",
+    "preview": "legacy/previews/local-b007a5e0e357.png"
+  },
+  {
+    "id": "local-add456e3403a",
+    "name": "hallo_16",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/hallo_16/hallo_16.model.json",
+    "preview": "legacy/previews/local-add456e3403a.png"
+  },
+  {
+    "id": "local-a8f1f1107ab9",
+    "name": "haru · haru_02",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/haru/haru_02.model.json",
+    "preview": "legacy/previews/local-a8f1f1107ab9.png"
+  },
+  {
+    "id": "local-53024b6a2bd2",
+    "name": "haruto",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/haruto/haruto.model.json",
+    "preview": "legacy/previews/local-53024b6a2bd2.png"
+  },
+  {
+    "id": "local-062d30802d76",
+    "name": "hibiki",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/hibiki/hibiki.model.json",
+    "preview": "legacy/previews/local-062d30802d76.png"
+  },
+  {
+    "id": "local-f37929291b95",
+    "name": "hijiki",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/hijiki/hijiki.model.json",
+    "preview": "legacy/previews/local-f37929291b95.png"
+  },
+  {
+    "id": "local-e7aff0c79cb1",
+    "name": "himeko",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/himeko/model.json",
+    "preview": "legacy/previews/local-e7aff0c79cb1.png"
+  },
+  {
+    "id": "local-cd6d6b2478e9",
+    "name": "iio",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/iio/iio.model.json",
+    "preview": "legacy/previews/local-cd6d6b2478e9.png"
+  },
+  {
+    "id": "local-ac84c179fb76",
+    "name": "illyasviel",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/illyasviel/illyasviel.model.json",
+    "preview": "legacy/previews/local-ac84c179fb76.png"
+  },
+  {
+    "id": "local-a43a35279a99",
+    "name": "index",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/index/model.json",
+    "preview": "legacy/previews/local-a43a35279a99.png"
+  },
+  {
+    "id": "local-6c40291d8613",
+    "name": "izumi",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/izumi/izumi.model.json",
+    "preview": "legacy/previews/local-6c40291d8613.png"
+  },
+  {
+    "id": "local-5c0664c141b8",
+    "name": "jin",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/jin/jin.model.json",
+    "preview": "legacy/previews/local-5c0664c141b8.png"
+  },
+  {
+    "id": "local-6a05cefd0079",
+    "name": "kanzaki",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/kanzaki/kanzaki.model.json",
+    "preview": "legacy/previews/local-6a05cefd0079.png"
+  },
+  {
+    "id": "local-44bc1d178117",
+    "name": "katou_01",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/katou_01/katou_01.model.json",
+    "preview": "legacy/previews/local-44bc1d178117.png"
+  },
+  {
+    "id": "local-a2b423db180a",
+    "name": "kiana",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/kiana/model.json",
+    "preview": "legacy/previews/local-a2b423db180a.png"
+  },
+  {
+    "id": "local-760cc8bb9017",
+    "name": "kuroko",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/kuroko/kuroko.model.json",
+    "preview": "legacy/previews/local-760cc8bb9017.png"
+  },
+  {
+    "id": "local-17577ba3484b",
+    "name": "kurumi",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/kurumi/model.json",
+    "preview": "legacy/previews/local-17577ba3484b.png"
+  },
+  {
+    "id": "local-800f99e79437",
+    "name": "len",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/len/len.model.json",
+    "preview": "legacy/previews/local-800f99e79437.png"
+  },
+  {
+    "id": "local-90e3f35f12cc",
+    "name": "len_impact",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/len_impact/len_impact.model.json",
+    "preview": "legacy/previews/local-90e3f35f12cc.png"
+  },
+  {
+    "id": "local-a167546ec815",
+    "name": "len_space",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/len_space/len_space.model.json",
+    "preview": "legacy/previews/local-a167546ec815.png"
+  },
+  {
+    "id": "local-b86c56f28377",
+    "name": "len_swim",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/len_swim/len_swim.model.json",
+    "preview": "legacy/previews/local-b86c56f28377.png"
+  },
+  {
+    "id": "local-fcce62f77537",
+    "name": "liang · 2",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/liang/2.json",
+    "preview": "legacy/previews/local-fcce62f77537.png"
+  },
+  {
+    "id": "local-53f743f81b90",
+    "name": "live_uu",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/live_uu/model.json",
+    "preview": "legacy/previews/local-53f743f81b90.png"
+  },
+  {
+    "id": "local-87cfa88dd7cf",
+    "name": "live_uu · model_usb",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/live_uu/model_usb.json",
+    "preview": "legacy/previews/local-87cfa88dd7cf.png"
+  },
+  {
+    "id": "local-8f8df3c4784b",
+    "name": "makoto0",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/makoto0/makoto0.model.json",
+    "preview": "legacy/previews/local-8f8df3c4784b.png"
+  },
+  {
+    "id": "local-c41f5fb0780b",
+    "name": "mashiro · ryoufuku",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/mashiro/ryoufuku.model.json",
+    "preview": "legacy/previews/local-c41f5fb0780b.png"
+  },
+  {
+    "id": "local-86ec0535a562",
+    "name": "mashiro · seifuku",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/mashiro/seifuku.model.json",
+    "preview": "legacy/previews/local-86ec0535a562.png"
+  },
+  {
+    "id": "local-9eb97471d465",
+    "name": "mashiro · shifuku",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/mashiro/shifuku.model.json",
+    "preview": "legacy/previews/local-9eb97471d465.png"
+  },
+  {
+    "id": "local-8303b2423209",
+    "name": "mei",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/mei/model.json",
+    "preview": "legacy/previews/local-8303b2423209.png"
+  },
+  {
+    "id": "local-19b5ddd5c820",
+    "name": "mikoto",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/mikoto/mikoto.model.json",
+    "preview": "legacy/previews/local-19b5ddd5c820.png"
+  },
+  {
+    "id": "local-d3fe7c3d4a3c",
+    "name": "moon",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/moon/model.json",
+    "preview": "legacy/previews/local-d3fe7c3d4a3c.png"
+  },
+  {
+    "id": "local-6b1abdd188d6",
+    "name": "murakumo",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/murakumo/index.json",
+    "preview": "legacy/previews/local-6b1abdd188d6.png"
+  },
+  {
+    "id": "local-8904d5bacf70",
+    "name": "penchan",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/penchan/penchan.model.json",
+    "preview": "legacy/previews/local-8904d5bacf70.png"
+  },
+  {
+    "id": "local-85af99ad7c3f",
+    "name": "platelet-2",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/platelet-2/model.json",
+    "preview": "legacy/previews/local-85af99ad7c3f.png"
+  },
+  {
+    "id": "local-7a0cdd60dda3",
+    "name": "platelet-3 · kesyoban",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/platelet-3/kesyoban.model.json",
+    "preview": "legacy/previews/local-7a0cdd60dda3.png"
+  },
+  {
+    "id": "local-8dcc18f3ca4d",
+    "name": "platelet-3",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/platelet-3/model.json",
+    "preview": "legacy/previews/local-8dcc18f3ca4d.png"
+  },
+  {
+    "id": "local-ba0b62c93f4a",
+    "name": "platelet",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/platelet/model.json",
+    "preview": "legacy/previews/local-ba0b62c93f4a.png"
+  },
+  {
+    "id": "local-4fdfa49169d9",
+    "name": "redeemer",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/redeemer/model.json",
+    "preview": "legacy/previews/local-4fdfa49169d9.png"
+  },
+  {
+    "id": "local-6d5ec5f25cb5",
+    "name": "ryoufuku",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/ryoufuku/ryoufuku.model.json",
+    "preview": "legacy/previews/local-6d5ec5f25cb5.png"
+  },
+  {
+    "id": "local-17e94bc9ad94",
+    "name": "sakura",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/sakura/model.json",
+    "preview": "legacy/previews/local-17e94bc9ad94.png"
+  },
+  {
+    "id": "local-e6faee639904",
+    "name": "saten",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/saten/saten.model.json",
+    "preview": "legacy/previews/local-e6faee639904.png"
+  },
+  {
+    "id": "local-854e4692066a",
+    "name": "seele",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/seele/model.json",
+    "preview": "legacy/previews/local-854e4692066a.png"
+  },
+  {
+    "id": "local-4c0e71993c39",
+    "name": "seifuku",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/seifuku/seifuku.model.json",
+    "preview": "legacy/previews/local-4c0e71993c39.png"
+  },
+  {
+    "id": "local-006e61f0de81",
+    "name": "shifuku2",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/shifuku2/shifuku2.model.json",
+    "preview": "legacy/previews/local-006e61f0de81.png"
+  },
+  {
+    "id": "local-2fb951ee270f",
+    "name": "shifuku",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/shifuku/shifuku.model.json",
+    "preview": "legacy/previews/local-2fb951ee270f.png"
+  },
+  {
+    "id": "local-ca3e721348d9",
+    "name": "sin",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/sin/model.json",
+    "preview": "legacy/previews/local-ca3e721348d9.png"
+  },
+  {
+    "id": "local-d6d610c47c5e",
+    "name": "snow_miku",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/snow_miku/model.json",
+    "preview": "legacy/previews/local-d6d610c47c5e.png"
+  },
+  {
+    "id": "local-2330203aee3c",
+    "name": "stl",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/stl/stl.model.json",
+    "preview": "legacy/previews/local-2330203aee3c.png"
+  },
+  {
+    "id": "local-e6d6cde7c6b5",
+    "name": "theresa",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/theresa/model.json",
+    "preview": "legacy/previews/local-e6d6cde7c6b5.png"
+  },
+  {
+    "id": "local-38419e1e9118",
+    "name": "tororo",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/tororo/tororo.model.json",
+    "preview": "legacy/previews/local-38419e1e9118.png"
+  },
+  {
+    "id": "local-fe738ac9a8d1",
+    "name": "touma",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/touma/touma.model.json",
+    "preview": "legacy/previews/local-fe738ac9a8d1.png"
+  },
+  {
+    "id": "local-d1e74cc90de9",
+    "name": "tsumiki",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/tsumiki/tsumiki.model.json",
+    "preview": "legacy/previews/local-d1e74cc90de9.png"
+  },
+  {
+    "id": "local-28bef56617ad",
+    "name": "uiharu",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/uiharu/uiharu.model.json",
+    "preview": "legacy/previews/local-28bef56617ad.png"
+  },
+  {
+    "id": "local-37246edb325f",
+    "name": "unitychan",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/unitychan/unitychan.model.json",
+    "preview": "legacy/previews/local-37246edb325f.png"
+  },
+  {
+    "id": "local-458a7ca9f38c",
+    "name": "wed_16",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/wed_16/wed_16.model.json",
+    "preview": "legacy/previews/local-458a7ca9f38c.png"
+  },
+  {
+    "id": "local-cfa1c78faed4",
+    "name": "xiaomai",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/xiaomai/xiaomai.model.json",
+    "preview": "legacy/previews/local-cfa1c78faed4.png"
+  },
+  {
+    "id": "local-ca80af1378a8",
+    "name": "yukari_model",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/yukari_model/yukari_model.model.json",
+    "preview": "legacy/previews/local-ca80af1378a8.png"
+  },
+  {
+    "id": "local-648563eed82c",
+    "name": "yuri",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/yuri/model.json",
+    "preview": "legacy/previews/local-648563eed82c.png"
+  },
+  {
+    "id": "local-90fde350200d",
+    "name": "z16",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/model/z16/z16.model.json",
+    "preview": "legacy/previews/local-90fde350200d.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-8d28c0b35f25",
+    "name": "chino",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/chino/model.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-8d28c0b35f25.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-59e76ff0f2a9",
+    "name": "histoire",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/histoire/model.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-59e76ff0f2a9.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-72e628289929",
+    "name": "HK416-2-destroy",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/HK416-2-destroy/model.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-72e628289929.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-3443d7e558cb",
+    "name": "HK416-2-normal",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/HK416-2-normal/model.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-3443d7e558cb.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-514e76559656",
+    "name": "Kar98k-normal",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/Kar98k-normal/model.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-514e76559656.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-e65b74f64392",
+    "name": "koharu",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/koharu/model.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-e65b74f64392.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-3438cd1bb6be",
+    "name": "Pio",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/Pio/model.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-3438cd1bb6be.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-210d5415ece4",
+    "name": "potion-Maker-Pio",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/potion-Maker-Pio/index.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-210d5415ece4.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-be6f14e82aae",
+    "name": "rem_2",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/rem_2/model.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-be6f14e82aae.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-6c198635e7f2",
+    "name": "shizuku_48",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/shizuku_48/index.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-6c198635e7f2.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-8709f700267c",
+    "name": "shizuku_pajama",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/shizuku_pajama/index.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-8709f700267c.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-11260c956053",
+    "name": "uni",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/uni/model.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-11260c956053.png"
+  },
+  {
+    "id": "l2d-models-615c42add339-56492dfd0219",
+    "name": "xisitina",
+    "family": "收藏角色",
+    "generation": 2,
+    "manifest": "legacy/l2d-models-615c42add339/models/xisitina/model.json",
+    "preview": "legacy/previews/l2d-models-615c42add339-56492dfd0219.png"
+  }
+]

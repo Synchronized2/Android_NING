@@ -1,0 +1,89 @@
+{
+  "version": "Sample 1.0.0",
+  "model": "moc/izumi_illust.moc",
+  "textures": [
+    "moc/izumi_illust.1024/texture_00.png",
+    "moc/izumi_illust.1024/texture_01.png",
+    "moc/izumi_illust.1024/texture_02.png",
+    "moc/izumi_illust.1024/texture_03.png"
+  ],
+  "motions": {
+    "idle": [
+      {
+        "file": "mtn/idle_01.mtn"
+      },
+      {
+        "file": "mtn/idle_02.mtn"
+      },
+      {
+        "file": "mtn/idle_03.mtn"
+      },
+      {
+        "file": "mtn/idle_04.mtn"
+      }
+    ],
+    "null": [
+      {
+        "file": "mtn/izumi_01.mtn"
+      },
+      {
+        "file": "mtn/izumi_02.mtn"
+      },
+      {
+        "file": "mtn/izumi_03.mtn"
+      },
+      {
+        "file": "mtn/izumi_04.mtn"
+      },
+      {
+        "file": "mtn/izumi_05.mtn"
+      },
+      {
+        "file": "mtn/izumi_06.mtn"
+      },
+      {
+        "file": "mtn/izumi_07.mtn"
+      },
+      {
+        "file": "mtn/izumi_08.mtn"
+      },
+      {
+        "file": "mtn/izumi_09.mtn"
+      },
+      {
+        "file": "mtn/izumi_10.mtn"
+      }
+    ]
+  },
+  "expressions": [
+    {
+      "name": "f01.exp.json",
+      "file": "exp/f01.exp.json"
+    },
+    {
+      "name": "f02.exp.json",
+      "file": "exp/f02.exp.json"
+    },
+    {
+      "name": "f03.exp.json",
+      "file": "exp/f03.exp.json"
+    },
+    {
+      "name": "f04.exp.json",
+      "file": "exp/f04.exp.json"
+    },
+    {
+      "name": "f05.exp.json",
+      "file": "exp/f05.exp.json"
+    },
+    {
+      "name": "f06.exp.json",
+      "file": "exp/f06.exp.json"
+    },
+    {
+      "name": "f07.exp.json",
+      "file": "exp/f07.exp.json"
+    }
+  ],
+  "physics": "izumi.physics.json"
+}
