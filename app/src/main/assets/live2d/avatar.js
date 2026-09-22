@@ -233,16 +233,20 @@
     }
     if (!model) return;
     const bounds = visibleBounds();
+    const fullBodyBottomSafeRatio = 0.14;
+    const fullBodyHeight = height * (1 - fullBodyBottomSafeRatio);
+    const fitHeight = state.viewMode === "full" ? fullBodyHeight : height;
     const fullScale = Math.min(
       width * 0.84 / (bounds.maxX - bounds.minX),
-      height * 0.84 / (bounds.maxY - bounds.minY));
+      fitHeight * 0.84 / (bounds.maxY - bounds.minY));
     const scale = state.viewMode === "full" ? fullScale : fullScale * 1.5;
     const scaleX = 2 * scale / width;
     const scaleY = 2 * scale / height;
     transform = state.viewMode === "full"
       ? [scaleX, scaleY,
           -(bounds.minX + bounds.maxX) * 0.5 * scaleX,
-          -(bounds.minY + bounds.maxY) * 0.5 * scaleY]
+          fullBodyBottomSafeRatio
+            - (bounds.minY + bounds.maxY) * 0.5 * scaleY]
       : [scaleX, scaleY,
           -(bounds.minX + bounds.maxX) * 0.5 * scaleX,
           0.84 - bounds.maxY * scaleY];
@@ -308,9 +312,11 @@
     const boundsHeight = Math.max(1, bounds.maxY - bounds.minY);
     const wideModel = boundsWidth / boundsHeight > 0.65;
     const fullBodyFill = wideModel ? 0.68 : 0.84;
+    const fullBodyHeight = height * 0.86;
+    const fitHeight = portrait ? height : fullBodyHeight;
     const fullScale = Math.min(
       width * fullBodyFill / boundsWidth,
-      height * fullBodyFill / boundsHeight);
+      fitHeight * fullBodyFill / boundsHeight);
     const scale = portrait ? fullScale * 1.5 : fullScale;
     legacyAvatar.anchor.set(0, 0);
     legacyAvatar.scale.set(scale, scale);
@@ -318,7 +324,7 @@
       - (bounds.minX + bounds.maxX) * 0.5 * scale;
     legacyAvatar.position.y = portrait
       ? height * 0.04 - bounds.minY * scale
-      : height * 0.5 - (bounds.minY + bounds.maxY) * 0.5 * scale;
+      : fullBodyHeight * 0.5 - (bounds.minY + bounds.maxY) * 0.5 * scale;
   }
 
   async function initializeLegacy(selected) {

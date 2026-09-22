@@ -199,7 +199,7 @@
             android:layout_width="match_parent"
             android:layout_height="118dp"
             android:layout_gravity="bottom"
-            android:background="@color/bg"
+            android:background="@color/voice_controls_overlay"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingTop="6dp"

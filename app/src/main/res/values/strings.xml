@@ -27,6 +27,7 @@
     <string name="image_action">生图</string>
     <string name="remove">移除</string>
     <string name="generated_image">生成的图片</string>
+    <string name="avatar_image_generation_started">正在为您生成图片，请稍后前往生图对话查看。</string>
     <string name="view_image">放大查看</string>
     <string name="download">下载</string>
     <string name="retry">重试</string>
@@ -78,9 +79,9 @@
     <string name="read_latest_reply">朗读最近回复</string>
     <string name="switch_to_full_body">切换全身视角</string>
     <string name="switch_to_portrait">切换半身视角</string>
-    <string name="voice_listening">正在听你说话，再点一次结束</string>
+    <string name="voice_listening">正在听你说话，静音后自动结束，也可再次点击结束</string>
     <string name="voice_processing">正在识别语音…</string>
-    <string name="voice_not_available">此设备没有可用的系统语音识别服务</string>
+    <string name="voice_not_available">此设备不支持所需的录音格式</string>
     <string name="voice_permission_denied">需要麦克风权限才能进行语音对话</string>
     <string name="voice_no_match">没有识别到语音，请重试</string>
     <string name="voice_failed">语音识别失败：%1$s</string>

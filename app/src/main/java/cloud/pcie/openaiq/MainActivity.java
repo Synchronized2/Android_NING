@@ -103,6 +103,8 @@ public final class MainActivity extends Activity {
     private String avatarDisplayName = "Hiyori";
     private String activeAvatarId = "";
     private SpeechController.State speechState = SpeechController.State.IDLE;
+    private ChatMessage speechDisplayMessage;
+    private String speechDisplayText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +138,10 @@ public final class MainActivity extends Activity {
             @Override
             public void onStateChanged(ChatMessage message, SpeechController.State state, int attempt) {
                 speechState = state;
+                if (state == SpeechController.State.IDLE) {
+                    speechDisplayMessage = null;
+                    speechDisplayText = "";
+                }
                 refreshMessages(false);
                 updateModeViews();
                 if (state == SpeechController.State.PREPARING) {
@@ -153,6 +159,13 @@ public final class MainActivity extends Activity {
                     updateAvatarState();
                     updateNodeStatus();
                 }
+            }
+
+            @Override
+            public void onPlaybackText(ChatMessage message, String text) {
+                speechDisplayMessage = text == null || text.isEmpty() ? null : message;
+                speechDisplayText = text == null ? "" : text;
+                updateAvatarDialog();
             }
 
             @Override
@@ -700,6 +713,12 @@ public final class MainActivity extends Activity {
         setBusy(true);
         refreshMessages();
 
+        boolean streamSpeech = forceSpeakNextReply || settings.autoSpeak;
+        forceSpeakNextReply = false;
+        if (streamSpeech) {
+            speechController.startStreaming(responseMessage, settings);
+        }
+
         int generation = ++requestGeneration;
         requestStartedAtMs = SystemClock.elapsedRealtime();
         activeHandle = client.stream(networkExecutor, settings, requestMessages, new OpenAiClient.Listener() {
@@ -711,6 +730,7 @@ public final class MainActivity extends Activity {
                     }
                     boolean firstDelta = activeMessage.content.isEmpty();
                     activeMessage.content += delta;
+                    speechController.appendStreamingText(activeMessage, delta);
                     if (firstDelta) {
                         updateAvatarState();
                     }
@@ -801,12 +821,16 @@ public final class MainActivity extends Activity {
             String prompt,
             ChatMessage responseMessage,
             ChatMessage referenceImage) {
+        boolean announceInAvatar = avatarEnabled
+                && ChatMessage.MODE_CHAT.equals(selectedMode);
         speechController.stop();
         activeMessage = responseMessage;
         activeMode = ChatMessage.MODE_IMAGE;
         activeMessage.mode = ChatMessage.MODE_IMAGE;
         activeMessage.imagePrompt = prompt;
-        activeMessage.content = "";
+        activeMessage.content = announceInAvatar
+                ? getString(R.string.avatar_image_generation_started)
+                : "";
         activeMessage.error = false;
         activeMessage.retryable = false;
         activeMessage.generatedImage = false;
@@ -816,6 +840,9 @@ public final class MainActivity extends Activity {
         activeMessage.meta = "";
         setBusy(true);
         refreshMessages();
+        if (announceInAvatar) {
+            speechController.speak(activeMessage, settings);
+        }
 
         int generation = ++requestGeneration;
         requestStartedAtMs = SystemClock.elapsedRealtime();
@@ -928,6 +955,10 @@ public final class MainActivity extends Activity {
         if (activeMessage != null && activeMessage.content.trim().isEmpty()) {
             activeMessage.content = "已停止生成。";
         }
+        if (activeMessage != null && ChatMessage.MODE_IMAGE.equals(activeMode)) {
+            activeMessage.content = "已停止生成图片。";
+            speechController.stop();
+        }
         if (activeMessage != null) {
             activeMessage.error = true;
             activeMessage.retryable = true;
@@ -939,9 +970,14 @@ public final class MainActivity extends Activity {
 
     private void finishRequest() {
         ChatMessage completedMessage = activeMessage;
-        boolean shouldAutoSpeak = completedMessage != null
-                && completedMessage.isSpeakable()
-                && (forceSpeakNextReply || AppSettings.load(this).autoSpeak);
+        boolean streamingSpeech = speechController.isStreaming(completedMessage);
+        if (streamingSpeech) {
+            if (completedMessage.isSpeakable()) {
+                speechController.finishStreaming(completedMessage, completedMessage.content);
+            } else {
+                speechController.stop();
+            }
+        }
         forceSpeakNextReply = false;
         activeHandle = null;
         activeMessage = null;
@@ -951,9 +987,6 @@ public final class MainActivity extends Activity {
         saveConversation();
         refreshMessages();
         updateNodeStatus();
-        if (shouldAutoSpeak) {
-            speechController.speak(completedMessage, AppSettings.load(this));
-        }
     }
 
     private void clearConversation() {
@@ -1085,7 +1118,14 @@ public final class MainActivity extends Activity {
             }
         }
         avatarDialog.setVisibility(View.VISIBLE);
-        if (latest == null) {
+        if (speechDisplayMessage != null && !speechDisplayText.isEmpty()) {
+            avatarDialogRole.setText(avatarDisplayName);
+            avatarDialogText.setText(speechDisplayText);
+        } else if (speechController.isStreaming(activeMessage)
+                || (latest != null && speechController.isStreaming(latest))) {
+            avatarDialogRole.setText(avatarDisplayName);
+            avatarDialogText.setText("正在思考…");
+        } else if (latest == null) {
             avatarDialogRole.setText(avatarDisplayName);
             avatarDialogText.setText("你好，今天想聊些什么？");
         } else {

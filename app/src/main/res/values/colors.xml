@@ -11,4 +11,5 @@
     <color name="divider">#294047</color>
     <color name="icon_background">#0B1115</color>
     <color name="avatar_stage">#263E49</color>
+    <color name="voice_controls_overlay">#B80B1115</color>
 </resources>
