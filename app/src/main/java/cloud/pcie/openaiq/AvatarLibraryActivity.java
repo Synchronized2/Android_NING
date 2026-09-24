@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -44,7 +43,8 @@ public final class AvatarLibraryActivity extends Activity {
     private TextView previewMeta;
     private TextView currentLabel;
     private Button useButton;
-    private ImageButton viewToggle;
+    private Button viewToggle;
+    private Button portraitButton;
     private EditText searchInput;
 
     @Override
@@ -64,9 +64,11 @@ public final class AvatarLibraryActivity extends Activity {
         currentLabel = findViewById(R.id.avatarCurrentLabel);
         useButton = findViewById(R.id.useAvatarButton);
         viewToggle = findViewById(R.id.libraryViewToggleButton);
+        portraitButton = findViewById(R.id.libraryPortraitButton);
         searchInput = findViewById(R.id.avatarSearchInput);
         ListView list = findViewById(R.id.avatarList);
         Spinner familySpinner = findViewById(R.id.avatarFamilySpinner);
+        styleLibrary(familySpinner);
 
         adapter = new AvatarAdapter();
         list.setAdapter(adapter);
@@ -81,7 +83,7 @@ public final class AvatarLibraryActivity extends Activity {
                 }
                 previewStatus.setText(getString(R.string.avatar_preview_ready, focused.name));
                 useButton.setEnabled(!focused.id.equals(selectedId));
-                viewToggle.setEnabled(true);
+                setViewModesEnabled(true);
                 preview.triggerGesture();
             }
 
@@ -89,6 +91,7 @@ public final class AvatarLibraryActivity extends Activity {
             public void onError(String message) {
                 previewStatus.setText(R.string.avatar_failed);
                 useButton.setEnabled(false);
+                setViewModesEnabled(false);
                 Toast.makeText(AvatarLibraryActivity.this,
                         getString(R.string.avatar_failed) + "：" + message,
                         Toast.LENGTH_LONG).show();
@@ -127,13 +130,9 @@ public final class AvatarLibraryActivity extends Activity {
         });
 
         updateViewToggle();
-        viewToggle.setEnabled(false);
-        viewToggle.setOnClickListener(view -> {
-            fullBody = !fullBody;
-            AppSettings.saveAvatarFullBody(this, fullBody);
-            preview.setViewMode(fullBody);
-            updateViewToggle();
-        });
+        setViewModesEnabled(false);
+        viewToggle.setOnClickListener(view -> setFullBody(true));
+        portraitButton.setOnClickListener(view -> setFullBody(false));
         useButton.setOnClickListener(view -> useFocusedAvatar());
         findViewById(R.id.avatarBackButton).setOnClickListener(view -> finishWithResult());
 
@@ -174,9 +173,11 @@ public final class AvatarLibraryActivity extends Activity {
         focusedId = avatar.id;
         previewTitle.setText(avatar.name);
         previewMeta.setText(getString(R.string.avatar_local_meta, avatar.family));
-        previewStatus.setText(getString(R.string.avatar_preview_loading, avatar.name));
-        useButton.setEnabled(false);
-        viewToggle.setEnabled(false);
+        boolean ready = preview.isReadyForModel(avatar.id);
+        previewStatus.setText(getString(ready ? R.string.avatar_preview_ready
+                : R.string.avatar_preview_loading, avatar.name));
+        useButton.setEnabled(ready && !avatar.id.equals(selectedId));
+        setViewModesEnabled(ready);
         updateSelectionActions();
         adapter.notifyDataSetChanged();
         if (changed || !preview.isReadyForModel(avatar.id)) {
@@ -209,12 +210,43 @@ public final class AvatarLibraryActivity extends Activity {
     }
 
     private void updateViewToggle() {
-        viewToggle.setImageResource(fullBody
-                ? R.drawable.ic_avatar_portrait
-                : R.drawable.ic_avatar_full);
-        viewToggle.setContentDescription(getString(fullBody
-                ? R.string.switch_to_portrait
-                : R.string.switch_to_full_body));
+        viewToggle.setSelected(fullBody);
+        portraitButton.setSelected(!fullBody);
+        viewToggle.setTextColor(getColor(fullBody ? R.color.accent : R.color.text_secondary));
+        portraitButton.setTextColor(getColor(fullBody ? R.color.text_secondary : R.color.accent));
+    }
+
+    private void setFullBody(boolean value) {
+        if (fullBody == value) return;
+        fullBody = value;
+        AppSettings.saveAvatarFullBody(this, fullBody);
+        preview.setViewMode(fullBody);
+        updateViewToggle();
+    }
+
+    private void setViewModesEnabled(boolean enabled) {
+        viewToggle.setEnabled(enabled);
+        portraitButton.setEnabled(enabled);
+        viewToggle.setAlpha(enabled ? 1f : .45f);
+        portraitButton.setAlpha(enabled ? 1f : .45f);
+    }
+
+    private void styleLibrary(Spinner familySpinner) {
+        findViewById(R.id.avatarLibraryHeader).setBackgroundResource(R.drawable.bg_header_cyber);
+        findViewById(R.id.avatarPreviewStage).setForeground(new AvatarPreviewFrame(this));
+        for (int id : new int[]{R.id.avatarBackButton, R.id.useAvatarButton,
+                R.id.libraryViewToggleButton, R.id.libraryPortraitButton}) {
+            Button button = findViewById(id);
+            button.setBackgroundTintList(null);
+            button.setBackground(new CyberPanelDrawable(this, id == R.id.useAvatarButton
+                    ? CyberPanelDrawable.Kind.PRIMARY : CyberPanelDrawable.Kind.CHOICE));
+            button.setTextColor(getColor(R.color.accent));
+        }
+        searchInput.setBackground(new CyberPanelDrawable(this, CyberPanelDrawable.Kind.INPUT));
+        familySpinner.setBackground(new CyberPanelDrawable(this, CyberPanelDrawable.Kind.ACTION));
+        currentLabel.setBackgroundResource(R.drawable.bg_status_pill);
+        currentLabel.setPadding(dp(10), dp(6), dp(10), dp(6));
+        currentLabel.setTextColor(getColor(R.color.cyber_mint));
     }
 
     private AvatarCatalog.Avatar focusedAvatar() {
@@ -279,6 +311,8 @@ public final class AvatarLibraryActivity extends Activity {
 
                 ImageView image = new ImageView(AvatarLibraryActivity.this);
                 image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                image.setBackgroundResource(R.drawable.bg_view_toggle);
+                image.setClipToOutline(true);
                 row.addView(image, new LinearLayout.LayoutParams(dp(60), dp(60)));
 
                 LinearLayout copy = new LinearLayout(AvatarLibraryActivity.this);
@@ -322,10 +356,10 @@ public final class AvatarLibraryActivity extends Activity {
             holder.meta.setText(avatar.family);
             holder.state.setText(avatar.id.equals(selectedId)
                     ? getString(R.string.avatar_in_use)
-                    : "");
-            convertView.setBackgroundColor(getColor(avatar.id.equals(focusedId)
-                    ? R.color.surface_high
-                    : R.color.bg));
+                    : avatar.id.equals(focusedId) ? getString(R.string.avatar_previewing) : "");
+            convertView.setBackground(new CyberPanelDrawable(AvatarLibraryActivity.this,
+                    CyberPanelDrawable.Kind.SECTION));
+            convertView.setSelected(avatar.id.equals(focusedId));
             Bitmap bitmap = previews.get(avatar.preview);
             if (bitmap == null) {
                 bitmap = loadPreview(avatar.preview);

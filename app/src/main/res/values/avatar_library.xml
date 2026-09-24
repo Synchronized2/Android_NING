@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="avatar_view_portrait">半身</string>
+    <string name="avatar_view_full">全身</string>
+    <string name="avatar_previewing">预览中</string>
+</resources>

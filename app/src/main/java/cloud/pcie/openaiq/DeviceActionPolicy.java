@@ -23,6 +23,10 @@ final class DeviceActionPolicy {
             case OPEN_SETTINGS:
                 return containsAny(text, "打开", "进入", "开启", "open")
                         && isSettingsPanelAuthorized(action.target, text);
+            case NAVIGATE_TO_PLACE:
+                return !action.target.isBlank()
+                        && containsAny(text, "导航到", "导航去", "带我去", "前往", "navigate")
+                        && text.contains(normalize(action.target));
             default:
                 return false;
         }
@@ -37,9 +41,9 @@ final class DeviceActionPolicy {
             case "toggle":
                 return containsAny(text, "播放暂停", "切换播放", "playpause", "toggleplayback");
             case "next":
-                return containsAny(text, "下一首", "next", "skip");
+                return containsAny(text, "下一首", "下一曲", "下首", "切歌", "换歌", "next", "skip");
             case "previous":
-                return containsAny(text, "上一首", "previous", "backtrack");
+                return containsAny(text, "上一首", "上一曲", "上首", "previous", "backtrack");
             case "stop":
                 return containsAny(text, "停止播放", "停止音乐", "stopmusic", "stopplayback");
             default:

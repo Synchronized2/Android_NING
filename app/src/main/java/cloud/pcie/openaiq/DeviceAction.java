@@ -6,7 +6,8 @@ final class DeviceAction {
         SET_MEDIA_VOLUME,
         ADJUST_MEDIA_VOLUME,
         MEDIA_CONTROL,
-        OPEN_SETTINGS
+        OPEN_SETTINGS,
+        NAVIGATE_TO_PLACE
     }
 
     final Type type;
@@ -37,5 +38,9 @@ final class DeviceAction {
 
     static DeviceAction settings(String panel) {
         return new DeviceAction(Type.OPEN_SETTINGS, panel, 0);
+    }
+
+    static DeviceAction navigateTo(String destination) {
+        return new DeviceAction(Type.NAVIGATE_TO_PLACE, destination, 0);
     }
 }

@@ -63,6 +63,14 @@ final class ConversationStore {
     synchronized void save(List<ChatMessage> messages) {
         Snapshot snapshot = readSnapshot();
         Conversation active = snapshot.activeConversation();
+        if (messages == null || messages.isEmpty()) {
+            if (active != null) {
+                snapshot.conversations.remove(active);
+                snapshot.activeId = "";
+                writeSnapshot(snapshot);
+            }
+            return;
+        }
         long now = System.currentTimeMillis();
         if (active == null) {
             active = new Conversation(newId(), "新对话", now, now, new ArrayList<>());
@@ -80,13 +88,14 @@ final class ConversationStore {
 
     synchronized String createConversation() {
         Snapshot snapshot = readSnapshot();
-        long now = System.currentTimeMillis();
-        Conversation created = new Conversation(newId(), "新对话", now, now, new ArrayList<>());
-        snapshot.conversations.add(created);
-        snapshot.activeId = created.id;
-        trimOldest(snapshot);
+        Conversation active = snapshot.activeConversation();
+        if (active == null || active.messages.isEmpty()) {
+            return active == null ? "" : active.id;
+        }
+        // Keep the new chat transient until its first message is saved.
+        snapshot.activeId = "";
         writeSnapshot(snapshot);
-        return created.id;
+        return "";
     }
 
     synchronized boolean selectConversation(String id) {
@@ -141,6 +150,20 @@ final class ConversationStore {
                     conversation.messages.size(),
                     conversation.updatedAt,
                     conversation.id.equals(snapshot.activeId)));
+        }
+        return result;
+    }
+
+    synchronized ArrayList<ChatMessage> generatedImages() {
+        Snapshot snapshot = readSnapshot();
+        snapshot.conversations.sort((a, b) -> Long.compare(b.updatedAt, a.updatedAt));
+        ArrayList<ChatMessage> result = new ArrayList<>();
+        Set<String> seen = new HashSet<>();
+        for (Conversation conversation : snapshot.conversations) {
+            for (int i = conversation.messages.size() - 1; i >= 0; i--) {
+                ChatMessage message = conversation.messages.get(i);
+                if (message.hasGeneratedImage() && seen.add(message.imageUri)) result.add(message);
+            }
         }
         return result;
     }
@@ -219,7 +242,16 @@ final class ConversationStore {
                     writeSnapshot(snapshot);
                 }
             }
-            if (snapshot.find(snapshot.activeId) == null && !snapshot.conversations.isEmpty()) {
+            boolean removedEmpty = snapshot.conversations.removeIf(
+                    conversation -> conversation.messages.isEmpty());
+            if (removedEmpty) {
+                if (snapshot.find(snapshot.activeId) == null) {
+                    snapshot.activeId = "";
+                }
+                writeSnapshot(snapshot);
+            } else if (!snapshot.activeId.isEmpty()
+                    && snapshot.find(snapshot.activeId) == null
+                    && !snapshot.conversations.isEmpty()) {
                 snapshot.activeId = newest(snapshot.conversations).id;
             }
             return snapshot;

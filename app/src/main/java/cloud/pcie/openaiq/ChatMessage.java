@@ -18,6 +18,8 @@ final class ChatMessage {
     String meta = "";
     String mode = MODE_CHAT;
     String imagePrompt = "";
+    String imageSize = "";
+    String imageQuality = "";
     boolean generatedImage;
     boolean retryable;
 
@@ -37,6 +39,8 @@ final class ChatMessage {
                 .put("meta", meta)
                 .put("mode", mode)
                 .put("image_prompt", imagePrompt)
+                .put("image_size", imageSize)
+                .put("image_quality", imageQuality)
                 .put("generated_image", generatedImage)
                 .put("retryable", retryable);
     }
@@ -52,6 +56,8 @@ final class ChatMessage {
         message.meta = json.optString("meta", "");
         message.mode = json.optString("mode", MODE_CHAT);
         message.imagePrompt = json.optString("image_prompt", "");
+        message.imageSize = json.optString("image_size", "");
+        message.imageQuality = json.optString("image_quality", "");
         message.generatedImage = json.optBoolean("generated_image", false);
         message.retryable = json.optBoolean("retryable", false);
         return message;

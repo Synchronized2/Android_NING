@@ -15,6 +15,9 @@ final class LocalIntentParser {
     private static final Pattern OPEN_APP_EN = Pattern.compile(
             "^(?:open|launch|start)\\s+(.{1,30})$",
             Pattern.CASE_INSENSITIVE);
+    private static final Pattern NAVIGATE_TO = Pattern.compile(
+            "^(?:请|请你|麻烦)?(?:用|使用)?(?:百度地图)?(?:帮我)?"
+                    + "(?:导航到|导航去|带我去|前往)\\s*(.{1,80}?)[。！!]?$" );
 
     private LocalIntentParser() { }
 
@@ -58,14 +61,28 @@ final class LocalIntentParser {
         if (matches(text, "播放或暂停", "切换播放", "播放暂停", "play pause", "toggle playback")) {
             return DeviceAction.media("toggle");
         }
-        if (matches(text, "下一首", "播放下一首", "切到下一首", "next", "next track")) {
+        if (matches(text,
+                "下一首", "播放下一首", "切到下一首",
+                "下一曲", "播放下一曲", "切到下一曲",
+                "下一首歌", "播放下一首歌", "切歌", "换下一首",
+                "next", "next track")) {
             return DeviceAction.media("next");
         }
-        if (matches(text, "上一首", "播放上一首", "切到上一首", "previous", "previous track")) {
+        if (matches(text,
+                "上一首", "播放上一首", "切到上一首",
+                "上一曲", "播放上一曲", "切到上一曲",
+                "上一首歌", "播放上一首歌", "换上一首",
+                "previous", "previous track")) {
             return DeviceAction.media("previous");
         }
         if (matches(text, "停止播放", "停止音乐", "stop music", "stop playback")) {
             return DeviceAction.media("stop");
+        }
+
+        Matcher navigation = NAVIGATE_TO.matcher(text);
+        if (navigation.matches()) {
+            String destination = cleanDestination(navigation.group(1));
+            return destination.isEmpty() ? null : DeviceAction.navigateTo(destination);
         }
 
         DeviceAction settings = parseSettings(text);
@@ -125,6 +142,14 @@ final class LocalIntentParser {
                 .replaceFirst("(应用程序|客户端|应用|软件|app)$", "")
                 .trim();
         return cleaned.length() <= 20 ? cleaned : "";
+    }
+
+    private static String cleanDestination(String value) {
+        String cleaned = value.trim()
+                .replaceFirst("^(?:一下|这个)?", "")
+                .replaceFirst("(?:怎么走|的路线)$", "")
+                .trim();
+        return cleaned.length() <= 80 ? cleaned : "";
     }
 
     private static boolean containsMultipleIntentJoiner(String text) {

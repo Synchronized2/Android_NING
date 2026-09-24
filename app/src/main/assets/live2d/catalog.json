@@ -144,11 +144,11 @@
     "name": "Bismarck (Majesty of the Ironblood) · 备用配置",
     "family": "碧蓝航线",
     "generation": 3,
-    "model": "models/local-0167e0df5d0c/model.moc3",
+    "model": "models/local-73b9a40dbffb/model.moc3",
     "textures": [
       "models/local-0167e0df5d0c/texture-0.png"
     ],
-    "preview": "models/local-0167e0df5d0c/preview.png",
+    "preview": "models/local-73b9a40dbffb/preview.png",
     "poseGroups": []
   },
   {
@@ -355,6 +355,8 @@
   {
     "id": "local-34b8be351ff4",
     "name": "Ning Hai",
+    "framingParts": ["Part14"],
+    "excludedParts": ["Part100"],
     "family": "碧蓝航线",
     "generation": 3,
     "model": "models/local-34b8be351ff4/model.moc3",
@@ -367,6 +369,8 @@
   {
     "id": "local-7342b5d7c248",
     "name": "Ping Hai",
+    "framingParts": ["Part"],
+    "excludedParts": ["Part100"],
     "family": "碧蓝航线",
     "generation": 3,
     "model": "models/local-7342b5d7c248/model.moc3",
@@ -405,6 +409,7 @@
   {
     "id": "local-7994dec357ce",
     "name": "Admiral Graf Spee",
+    "excludedDrawables": ["ArtMesh0"],
     "family": "碧蓝航线",
     "generation": 3,
     "model": "models/local-7994dec357ce/model.moc3",
@@ -455,6 +460,7 @@
   {
     "id": "local-45708538a547",
     "name": "Shōkaku",
+    "excludedParts": ["Part5"],
     "family": "碧蓝航线",
     "generation": 3,
     "model": "models/local-45708538a547/model.moc3",
@@ -1647,6 +1653,7 @@
     "family": "少女前线",
     "generation": 2,
     "manifest": "legacy/model/dollsfrontline/golden/model1.json",
+    "framingExcludedDrawables": ["D_PSD.81"],
     "preview": "legacy/previews/local-3eae4d9b6f1b.png"
   },
   {
@@ -1655,6 +1662,7 @@
     "family": "少女前线",
     "generation": 2,
     "manifest": "legacy/model/dollsfrontline/golden/model2.json",
+    "framingExcludedDrawables": ["D_PSD.81"],
     "preview": "legacy/previews/local-14acbf6e0049.png"
   },
   {
@@ -1663,6 +1671,7 @@
     "family": "少女前线",
     "generation": 2,
     "manifest": "legacy/model/dollsfrontline/golden/model3.json",
+    "framingExcludedDrawables": ["D_PSD.81"],
     "preview": "legacy/previews/local-a2aac0108482.png"
   },
   {
@@ -2455,6 +2464,7 @@
     "family": "收藏角色",
     "generation": 2,
     "manifest": "legacy/l2d-models-615c42add339/models/Kar98k-normal/model.json",
+    "framingExcludedDrawables": ["D_PSD.28", "D_PSD.30"],
     "preview": "legacy/previews/l2d-models-615c42add339-514e76559656.png"
   },
   {

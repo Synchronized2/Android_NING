@@ -27,9 +27,11 @@
   let uvBuffer;
   let indexBuffer;
   let excludedDrawables = new Set();
+  let framingParts = new Set();
   let legacyModel = false;
   let legacyApp;
   let legacyAvatar;
+  let legacyFramingExclusions = new Set();
 
   const vertexShader = `
     attribute vec2 aPosition;
@@ -181,14 +183,30 @@
     return { minX, maxX, minY, maxY, area: (maxX - minX) * (maxY - minY) };
   }
 
-  function findExcludedDrawables() {
+  function belongsToPart(index, partIds) {
+    if (!partIds.size) return false;
+    let part = model.drawables.parentPartIndices[index];
+    const visited = new Set();
+    while (part >= 0 && !visited.has(part)) {
+      if (partIds.has(model.parts.ids[part])) return true;
+      visited.add(part);
+      part = model.parts.parentIndices[part];
+    }
+    return false;
+  }
+
+  function findExcludedDrawables(excludedPartIds, excludedIds) {
     const drawables = model.drawables;
     const excluded = new Set();
+    const excludedParts = new Set(excludedPartIds || []);
+    const explicitIds = new Set(excludedIds || []);
     const visual = [];
     for (let index = 0; index < drawables.count; index++) {
       if (!drawables.indexCounts[index]) continue;
       const id = String(drawables.ids[index] || "");
-      if (/touch(?:body|head)?|hitarea|blackbg/i.test(id)) {
+      if (/touch(?:body|head)?|hitarea|blackbg/i.test(id)
+          || explicitIds.has(id)
+          || belongsToPart(index, excludedParts)) {
         excluded.add(index);
         continue;
       }
@@ -211,6 +229,7 @@
     const drawables = model.drawables;
     for (let index = 0; index < drawables.count; index++) {
       if (excludedDrawables.has(index)
+          || (framingParts.size && !belongsToPart(index, framingParts))
           || effectiveDrawableOpacity(index) <= 0.001
           || !drawables.indexCounts[index]) continue;
       const bounds = drawableBounds(index);
@@ -255,13 +274,20 @@
   function legacyGeometryBounds() {
     if (!legacyAvatar || !legacyAvatar.internalModel) return null;
     const internal = legacyAvatar.internalModel;
-    const offsetRatio = internal.settings && internal.settings.layout ? 0.45 : 1;
-    const coreOffsetX = internal.originalWidth * 0.5 * offsetRatio;
     const ids = internal.getDrawableIDs();
     const entries = [];
     for (let index = 0; index < internal.drawDataCount; index++) {
       const id = String(ids[index] || "");
-      if (/touch(?:body|head)?|hitarea|blackbg/i.test(id)) continue;
+      if (/touch(?:body|head)?|hitarea|blackbg|^D_tap\./i.test(id)
+          || legacyFramingExclusions.has(id)) continue;
+      // The bundled Cubism 2 Core exposes drawable opacity through its model
+      // context. Hidden effects and alternate poses must not enlarge the fit.
+      const coreContext = internal.coreModel.getModelContext();
+      const mesh = coreContext.getDrawData(index);
+      const meshState = coreContext._$C2(index);
+      if (!mesh || !meshState || !meshState._$yo()
+          || mesh.getOpacity(coreContext, meshState) * meshState.baseOpacity
+              * internal.coreModel.getPartsOpacity(meshState._$IP) <= 0.001) continue;
       let vertices;
       try {
         vertices = internal.getDrawableVertices(index);
@@ -272,7 +298,7 @@
       let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
       const matrix = internal.localTransform;
       for (let vertex = 0; vertex < vertices.length; vertex += 2) {
-        const coreX = vertices[vertex] + coreOffsetX;
+        const coreX = vertices[vertex];
         const x = matrix.a * coreX
           + matrix.c * vertices[vertex + 1] + matrix.tx;
         const y = matrix.b * vertices[vertex]
@@ -302,8 +328,10 @@
 
   function fitLegacyAvatar() {
     if (!legacyApp || !legacyAvatar) return;
-    const width = Math.max(1, canvas.clientWidth);
-    const height = Math.max(1, canvas.clientHeight);
+    // Pixi autoDensity writes an inline canvas size (initially 800 x 600).
+    // Measure the WebView viewport, never that renderer-owned canvas style.
+    const width = Math.max(1, document.documentElement.clientWidth);
+    const height = Math.max(1, document.documentElement.clientHeight);
     legacyApp.renderer.resize(width, height);
     const portrait = state.viewMode !== "full";
     const bounds = legacyGeometryBounds();
@@ -320,7 +348,7 @@
     const scale = portrait ? fullScale * 1.5 : fullScale;
     legacyAvatar.anchor.set(0, 0);
     legacyAvatar.scale.set(scale, scale);
-    legacyAvatar.position.x = width * (wideModel ? 0.45 : 0.5)
+    legacyAvatar.position.x = width * 0.5
       - (bounds.minX + bounds.maxX) * 0.5 * scale;
     legacyAvatar.position.y = portrait
       ? height * 0.04 - bounds.minY * scale
@@ -329,6 +357,7 @@
 
   async function initializeLegacy(selected) {
     legacyModel = true;
+    legacyFramingExclusions = new Set(selected.framingExcludedDrawables || []);
     if (!window.PIXI || !window.PIXI.live2d) {
       throw new Error("Cubism 2 Pixi 运行库不可用");
     }
@@ -540,7 +569,8 @@
     if (!model) throw new Error("无法创建 Live2D 人物");
     initializePose(selected.poseGroups);
     model.update();
-    excludedDrawables = findExcludedDrawables();
+    framingParts = new Set(selected.framingParts || []);
+    excludedDrawables = findExcludedDrawables(selected.excludedParts, selected.excludedDrawables);
     for (let index = 0; index < model.parameters.count; index++) {
       parameterIndex.set(model.parameters.ids[index], index);
     }
@@ -570,6 +600,16 @@
   canvas.addEventListener("pointercancel", () => { state.targetX = 0; state.targetY = 0; });
 
   window.avatar = {
+    diagnostics() {
+      if (legacyAvatar) {
+        const m = legacyAvatar.internalModel;
+        return { bounds: legacyGeometryBounds(), width: m.originalWidth, height:m.originalHeight,
+          local:[m.localTransform.a,m.localTransform.d,m.localTransform.tx,m.localTransform.ty],
+          position:[legacyAvatar.x,legacyAvatar.y], scale:legacyAvatar.scale.x,
+          viewport:[canvas.clientWidth,canvas.clientHeight] };
+      }
+      return { bounds: model ? visibleBounds() : null, transform, viewport:[canvas.clientWidth,canvas.clientHeight] };
+    },
     setState(value) { state.phase = String(value || "idle"); },
     setSpeaking(value) { state.speaking = Boolean(value); },
     setViewMode(value) {

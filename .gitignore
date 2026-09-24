@@ -9,3 +9,8 @@ captures/
 .cxx/
 /dist/*.apk
 /tools/*.png
+
+# Local credentials and generated verification/download artifacts
+/tools/api.txt
+/artifacts/
+/design-assets/style-previews/

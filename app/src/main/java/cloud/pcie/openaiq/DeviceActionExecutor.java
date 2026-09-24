@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -74,6 +75,11 @@ final class DeviceActionExecutor {
                             "apps", "accessibility", "battery")
                             ? DeviceAction.settings(panel)
                             : null;
+                case "navigate_to_place":
+                    String destination = arguments.optString("destination").trim();
+                    return isSafeDestination(destination)
+                            ? DeviceAction.navigateTo(destination)
+                            : null;
                 default:
                     return null;
             }
@@ -97,6 +103,8 @@ final class DeviceActionExecutor {
                 return controlMedia(action.target);
             case OPEN_SETTINGS:
                 return openSettings(action.target);
+            case NAVIGATE_TO_PLACE:
+                return navigateToPlace(action.target);
             default:
                 return new Result(false, "未执行：未知设备操作。");
         }
@@ -321,10 +329,48 @@ final class DeviceActionExecutor {
         }
     }
 
+    private Result navigateToPlace(String destination) {
+        if (!isSafeDestination(destination)) {
+            return new Result(false, "未打开地图：目的地无效。");
+        }
+
+        Uri baiduUri = Uri.parse("baidumap://map/direction").buildUpon()
+                .appendQueryParameter("destination", "name:" + destination)
+                .appendQueryParameter("mode", "driving")
+                .appendQueryParameter("src", activity.getPackageName())
+                .build();
+        Intent baiduIntent = new Intent(Intent.ACTION_VIEW, baiduUri)
+                .setPackage("com.baidu.BaiduMap");
+        try {
+            activity.startActivity(baiduIntent);
+            return new Result(true, "已在百度地图中打开前往“" + destination + "”的路线。");
+        } catch (Exception ignored) {
+            Uri webUri = Uri.parse("https://api.map.baidu.com/direction").buildUpon()
+                    .appendQueryParameter("destination", "name:" + destination)
+                    .appendQueryParameter("mode", "driving")
+                    .appendQueryParameter("region", "全国")
+                    .appendQueryParameter("output", "html")
+                    .appendQueryParameter("src", activity.getPackageName())
+                    .build();
+            try {
+                activity.startActivity(new Intent(Intent.ACTION_VIEW, webUri));
+                return new Result(true, "未检测到百度地图应用，已用浏览器打开前往“"
+                        + destination + "”的路线。");
+            } catch (Exception exception) {
+                return new Result(false, "无法打开百度地图或浏览器。");
+            }
+        }
+    }
+
     private static boolean isSafeLabel(String value) {
         return value != null && !value.isBlank() && value.length() <= 30
                 && !value.contains(":") && !value.contains("/") && !value.contains("\\")
                 && !value.contains(".");
+    }
+
+    private static boolean isSafeDestination(String value) {
+        return value != null && !value.isBlank() && value.length() <= 80
+                && !value.contains("\n") && !value.contains("\r");
     }
 
     private static String normalizeAppName(String value) {

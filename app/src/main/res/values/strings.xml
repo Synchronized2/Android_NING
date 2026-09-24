@@ -37,8 +37,10 @@
     <string name="speech_retrying">语音重试 %1$d/3</string>
     <string name="speech_failed">语音朗读失败：%1$s</string>
     <string name="delete_message">删除</string>
-    <string name="confirm_delete_message">确定删除这条聊天记录吗？</string>
-    <string name="confirm_delete_generated_message">确定删除这条聊天记录吗？生成图片文件仍会保留在应用中。</string>
+    <string name="user_avatar">用户头像</string>
+    <string name="ning_avatar">NING 头像</string>
+    <string name="confirm_delete_message">确定删除这轮提问和回答吗？</string>
+    <string name="confirm_delete_generated_message">确定删除这轮提问和回答吗？生成图片文件仍会保留在应用中。</string>
     <string name="confirm_clear_chat">确定清空全部聊天记录吗？</string>
     <string name="stop_before_delete">请先停止当前请求</string>
     <string name="previous_request_interrupted">上次请求未完成。</string>
@@ -50,6 +52,7 @@
     <string name="live2d_avatar">Live2D 互动形象</string>
     <string name="avatar_loading">Hiyori · 正在加载</string>
     <string name="avatar_ready">Hiyori · 在线</string>
+    <string name="avatar_welcome_message">你好，今天想聊些什么？</string>
     <string name="avatar_listening">Hiyori · 正在聆听</string>
     <string name="avatar_thinking">Hiyori · 正在思考</string>
     <string name="avatar_answering">Hiyori · 正在回答</string>

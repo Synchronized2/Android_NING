@@ -10,8 +10,9 @@ android {
         applicationId "cloud.pcie.openaiq"
         minSdk 24
         targetSdk 36
-        versionCode 18
-        versionName "2.1.3"
+        versionCode 60
+        versionName "2.3.39"
+        testInstrumentationRunner "cloud.pcie.openaiq.LayoutPreviewInstrumentation"
     }
 
     buildTypes {

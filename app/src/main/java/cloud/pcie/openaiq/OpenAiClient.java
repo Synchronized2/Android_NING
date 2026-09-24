@@ -129,13 +129,14 @@ final class OpenAiClient {
             AppSettings settings,
             String prompt,
             ChatMessage referenceImage,
+            ImageGenerationOptions options,
             ImageListener listener) {
         RequestHandle handle = new RequestHandle();
         executor.execute(() -> {
             try {
                 ImageResult result = referenceImage != null && referenceImage.hasImage()
-                        ? performEditImage(handle, settings, prompt, referenceImage)
-                        : performGenerateImage(handle, settings, prompt);
+                        ? performEditImage(handle, settings, prompt, referenceImage, options)
+                        : performGenerateImage(handle, settings, prompt, options);
                 if (!handle.isCancelled()) {
                     listener.onSuccess(result);
                 }
@@ -215,7 +216,8 @@ final class OpenAiClient {
     private ImageResult performGenerateImage(
             RequestHandle handle,
             AppSettings settings,
-            String prompt) throws Exception {
+            String prompt,
+            ImageGenerationOptions options) throws Exception {
         HttpURLConnection connection = null;
         try {
             connection = openConnection(
@@ -226,9 +228,7 @@ final class OpenAiClient {
             connection.setDoOutput(true);
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            JSONObject payload = new JSONObject()
-                    .put("model", settings.imageModel)
-                    .put("prompt", prompt);
+            JSONObject payload = imagePayload(settings.imageModel, prompt, options);
             byte[] requestBytes = payload.toString().getBytes(StandardCharsets.UTF_8);
             connection.setFixedLengthStreamingMode(requestBytes.length);
             try (OutputStream output = connection.getOutputStream()) {
@@ -250,7 +250,8 @@ final class OpenAiClient {
             RequestHandle handle,
             AppSettings settings,
             String prompt,
-            ChatMessage referenceImage) throws Exception {
+            ChatMessage referenceImage,
+            ImageGenerationOptions options) throws Exception {
         HttpURLConnection connection = null;
         try {
             connection = openConnection(
@@ -268,6 +269,7 @@ final class OpenAiClient {
             try (OutputStream output = connection.getOutputStream()) {
                 writeMultipartText(output, boundary, "model", settings.imageModel);
                 writeMultipartText(output, boundary, "prompt", prompt);
+                writeImageOptions(output, boundary, options);
                 writeMultipartImage(output, boundary, referenceImage);
                 writeUtf8(output, "--" + boundary + "--\r\n");
             }
@@ -281,6 +283,18 @@ final class OpenAiClient {
         } finally {
             clearConnection(handle, connection);
         }
+    }
+
+    static JSONObject imagePayload(String model, String prompt, ImageGenerationOptions options) throws Exception {
+        JSONObject payload = new JSONObject().put("model", model).put("prompt", prompt);
+        if (!options.size.isEmpty()) payload.put("size", options.size);
+        if (!options.quality.isEmpty()) payload.put("quality", options.quality);
+        return payload;
+    }
+
+    void writeImageOptions(OutputStream output, String boundary, ImageGenerationOptions options) throws Exception {
+        if (!options.size.isEmpty()) writeMultipartText(output, boundary, "size", options.size);
+        if (!options.quality.isEmpty()) writeMultipartText(output, boundary, "quality", options.quality);
     }
 
     private void writeMultipartText(
@@ -559,8 +573,10 @@ final class OpenAiClient {
         messages.put(new JSONObject()
                 .put("role", "system")
                 .put("content", includeTools
-                        ? "你可以使用提供的设备工具和图片生成工具。只有当前用户明确要求操作本机时才调用设备工具；"
+                        ? "你可以使用提供的设备工具、实时天气工具和图片生成工具。只有当前用户明确要求操作本机时才调用设备工具；"
                                 + "应用名称必须使用用户说出的名称，不得猜包名。工具结果由客户端展示，不要声称已执行尚未调用的动作。"
+                                + "用户询问当前或未来天气时必须调用 get_weather。若用户明确说出城市或地区，将其放入 location；"
+                                + "若用户没有提供地点，设置 use_current_location=true，让客户端通过设备定位查询，不要先追问地点。"
                                 + "当用户明确要求生成、绘制或创作图片时，必须调用 generate_image，并把完整、可直接生图的描述放进 prompt；"
                                 + "普通图片分析、询问生图方法或非图片内容创作不要调用 generate_image。"
                         : "当前模型节点不支持工具。本轮只能正常回答，不能声称已经执行设备操作或生成图片。"));
@@ -622,6 +638,27 @@ final class OpenAiClient {
                         "settings", "wifi", "bluetooth", "display", "sound",
                         "apps", "accessibility", "battery")),
                 new JSONArray().put("panel")));
+        tools.put(functionTool(
+                "navigate_to_place",
+                "Open Baidu Maps with a route when the user explicitly asks to navigate to a destination.",
+                new JSONObject().put(
+                        "destination",
+                        stringProperty("The destination explicitly named by the user.")),
+                new JSONArray().put("destination")));
+        tools.put(functionTool(
+                "get_weather",
+                "Get real-time weather and a forecast for an explicit place or the device's current location.",
+                new JSONObject()
+                        .put("location", stringProperty(
+                                "City or region explicitly provided by the user. Omit for current location."))
+                        .put("use_current_location", new JSONObject()
+                                .put("type", "boolean")
+                                .put("description", "True when the user did not name a location."))
+                        .put("forecast_days", new JSONObject()
+                                .put("type", "integer")
+                                .put("minimum", 1)
+                                .put("maximum", 7)),
+                new JSONArray()));
         tools.put(functionTool(
                 "generate_image",
                 "Generate an image only when the user explicitly asks to create, draw, or generate one.",

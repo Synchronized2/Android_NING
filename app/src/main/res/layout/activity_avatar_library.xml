@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg"
+    android:background="@drawable/bg_app_cyber"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/avatarLibraryHeader"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:gravity="center_vertical"
@@ -36,10 +37,12 @@
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/avatarPreviewStage"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="4"
-        android:background="@color/avatar_stage">
+        android:layout_marginHorizontal="12dp"
+        android:background="@drawable/bg_chat_scene">
 
         <cloud.pcie.openaiq.Live2DAvatarView
             android:id="@+id/avatarLibraryPreview"
@@ -58,20 +61,41 @@
             android:paddingTop="5dp"
             android:paddingEnd="10dp"
             android:paddingBottom="5dp"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/cyber_mint"
             android:textSize="12sp" />
 
-        <ImageButton
-            android:id="@+id/libraryViewToggleButton"
-            android:layout_width="48dp"
+        <LinearLayout
+            android:id="@+id/libraryViewModeGroup"
+            android:layout_width="144dp"
             android:layout_height="48dp"
             android:layout_gravity="bottom|end"
             android:layout_margin="12dp"
-            android:background="@drawable/bg_view_toggle"
-            android:contentDescription="@string/switch_to_full_body"
-            android:padding="12dp"
-            android:src="@drawable/ic_avatar_full"
-            android:tint="@color/surface_high" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/libraryPortraitButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
+                android:text="@string/avatar_view_portrait"
+                android:textSize="14sp"
+                android:contentDescription="@string/switch_to_portrait" />
+
+            <Button
+                android:id="@+id/libraryViewToggleButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
+                android:text="@string/avatar_view_full"
+                android:textSize="14sp"
+                android:contentDescription="@string/switch_to_full_body" />
+        </LinearLayout>
     </FrameLayout>
 
     <LinearLayout
@@ -175,5 +199,7 @@
         android:divider="@color/divider"
         android:dividerHeight="1dp"
         android:listSelector="@android:color/transparent"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:paddingBottom="12dp" />
 </LinearLayout>

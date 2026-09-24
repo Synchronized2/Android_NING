@@ -1,16 +1,25 @@
 package cloud.pcie.openaiq;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.OpenableColumns;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -19,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,13 +54,19 @@ public final class MainActivity extends Activity {
     private static final int REQUEST_SAVE_IMAGE = 42;
     private static final int REQUEST_HISTORY = 43;
     private static final int REQUEST_RECORD_AUDIO = 44;
+    private static final int REQUEST_LOCATION = 45;
     private static final long MAX_IMAGE_BYTES = 10L * 1024L * 1024L;
+    private static final long LOCATION_CACHE_MAX_AGE_MS = 30L * 60L * 1000L;
+    private static final long LOCATION_TIMEOUT_MS = 12_000L;
+    private static final String MODE_WEATHER = "weather";
 
     private final ArrayList<ChatMessage> messages = new ArrayList<>();
     private final ArrayList<OpenAiClient.ToolCall> pendingToolCalls = new ArrayList<>();
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
     private final ExecutorService fileExecutor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private OpenAiClient client;
+    private WeatherClient weatherClient;
     private DeviceActionExecutor actionExecutor;
     private ConversationStore conversationStore;
     private SpeechController speechController;
@@ -59,10 +75,10 @@ public final class MainActivity extends Activity {
     private MessageAdapter adapter;
     private ListView messageList;
     private EditText messageInput;
-    private Button attachmentButton;
+    private ImageButton attachmentButton;
     private Button chatButton;
     private Button imageButton;
-    private Button sendButton;
+    private ImageButton sendButton;
     private TextView statusText;
     private TextView activeModelText;
     private View voiceControls;
@@ -79,6 +95,8 @@ public final class MainActivity extends Activity {
     private TextView avatarStatusText;
     private TextView voiceStatusText;
     private ImageButton voiceButton;
+    private CyberEffectsView micEffects;
+    private CyberEffectsView assistantPanelEffects;
     private View attachmentBar;
     private ImageView attachmentPreview;
     private TextView attachmentText;
@@ -93,6 +111,10 @@ public final class MainActivity extends Activity {
     private String activeMode = ChatMessage.MODE_CHAT;
     private String selectedMode = ChatMessage.MODE_CHAT;
     private boolean interactiveTextInput;
+    private View chatViewSwitcher;
+    private Button characterViewButton;
+    private Button conversationViewButton;
+    private ImageWorkbenchView imageWorkbench;
     private boolean avatarFullBody;
     private String pendingDownloadUri = "";
     private String pendingDownloadMime = "image/png";
@@ -105,12 +127,21 @@ public final class MainActivity extends Activity {
     private SpeechController.State speechState = SpeechController.State.IDLE;
     private ChatMessage speechDisplayMessage;
     private String speechDisplayText = "";
+    private boolean showAvatarWelcomeOnLaunch;
+    private LocationManager locationManager;
+    private LocationListener activeLocationListener;
+    private Runnable locationTimeout;
+    private Location fallbackLocation;
+    private int pendingLocationWeatherDays = 3;
+    private int pendingLocationWeatherGeneration = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         client = new OpenAiClient(getApplicationContext());
+        weatherClient = new WeatherClient(getApplicationContext());
+        showAvatarWelcomeOnLaunch = savedInstanceState == null;
         actionExecutor = new DeviceActionExecutor(this);
         conversationStore = new ConversationStore(this);
         live2dAvatar = findViewById(R.id.live2dAvatar);
@@ -118,6 +149,8 @@ public final class MainActivity extends Activity {
         avatarStatusText = findViewById(R.id.avatarStatusText);
         voiceStatusText = findViewById(R.id.voiceStatusText);
         voiceButton = findViewById(R.id.voiceButton);
+        micEffects = findViewById(R.id.micEffects);
+        assistantPanelEffects = findViewById(R.id.assistantPanelEffects);
         live2dAvatar.setListener(new Live2DAvatarView.Listener() {
             @Override
             public void onReady(String modelName) {
@@ -203,6 +236,8 @@ public final class MainActivity extends Activity {
         attachmentBar = findViewById(R.id.attachmentBar);
         attachmentPreview = findViewById(R.id.attachmentPreview);
         attachmentText = findViewById(R.id.attachmentText);
+        createWorkspaceViews();
+        applyReferenceLayoutMetrics();
         voiceController = new VoiceConversationController(this,
                 new VoiceConversationController.Listener() {
                     @Override
@@ -265,6 +300,9 @@ public final class MainActivity extends Activity {
         messageList.setAdapter(adapter);
 
         restoreState(savedInstanceState);
+        imageWorkbench.restoreState(savedInstanceState);
+        interactiveTextInput = savedInstanceState != null && savedInstanceState.getBoolean("chat_list_view");
+        imageWorkbench.updateGallery(conversationStore.generatedImages());
         chatButton.setOnClickListener(view -> setSelectedMode(ChatMessage.MODE_CHAT));
         imageButton.setOnClickListener(view -> setSelectedMode(ChatMessage.MODE_IMAGE));
         sendButton.setOnClickListener(view -> {
@@ -308,7 +346,8 @@ public final class MainActivity extends Activity {
         });
 
         AppSettings settings = AppSettings.load(this);
-        setSelectedMode(ChatMessage.MODE_CHAT);
+        setSelectedMode(savedInstanceState == null ? ChatMessage.MODE_CHAT
+                : savedInstanceState.getString("selected_workspace", ChatMessage.MODE_CHAT));
         if (!settings.isConfigured() && savedInstanceState == null) {
             startActivity(new Intent(this, SettingsActivity.class));
         }
@@ -341,6 +380,9 @@ public final class MainActivity extends Activity {
         }
         outState.putString(STATE_MESSAGES, serialized.toString());
         outState.putString(STATE_DRAFT, messageInput.getText().toString());
+        outState.putBoolean("chat_list_view", interactiveTextInput);
+        outState.putString("selected_workspace", selectedMode);
+        imageWorkbench.saveState(outState);
         outState.putString(STATE_IMAGE_URI, pendingImageUri);
         outState.putString(STATE_IMAGE_MIME, pendingImageMime);
         outState.putString(STATE_IMAGE_NAME, pendingImageName);
@@ -359,6 +401,7 @@ public final class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        cancelLocationLookup();
         if (activeHandle != null) {
             activeHandle.cancel();
         }
@@ -368,6 +411,7 @@ public final class MainActivity extends Activity {
         voiceController.release();
         speechController.release();
         live2dAvatar.destroy();
+        imageWorkbench.release();
         super.onDestroy();
     }
 
@@ -377,6 +421,21 @@ public final class MainActivity extends Activity {
             String[] permissions,
             int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_LOCATION) {
+            int generation = pendingLocationWeatherGeneration;
+            int days = pendingLocationWeatherDays;
+            pendingLocationWeatherGeneration = -1;
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && busy
+                    && generation == requestGeneration) {
+                startLocationLookup(days, generation);
+            } else if (busy && generation == requestGeneration) {
+                failWeatherRequest(
+                        "未获得定位权限。请允许近似位置权限，或直接告诉我要查询的城市。");
+            }
+            return;
+        }
         if (requestCode != REQUEST_RECORD_AUDIO) {
             return;
         }
@@ -463,8 +522,7 @@ public final class MainActivity extends Activity {
     }
 
     private void showInteractiveKeyboard() {
-        interactiveTextInput = true;
-        updateModeViews();
+        setChatView(true);
         messageInput.requestFocus();
         InputMethodManager manager = getSystemService(InputMethodManager.class);
         if (manager != null) {
@@ -473,7 +531,11 @@ public final class MainActivity extends Activity {
     }
 
     private void returnToVoiceMode() {
-        interactiveTextInput = false;
+        setChatView(false);
+    }
+
+    private void setChatView(boolean conversation) {
+        interactiveTextInput = conversation;
         hideKeyboard();
         updateModeViews();
     }
@@ -529,11 +591,15 @@ public final class MainActivity extends Activity {
 
     private void updateVoiceState(VoiceConversationController.State state) {
         boolean active = state != VoiceConversationController.State.IDLE;
+        micEffects.setVoiceState(state == VoiceConversationController.State.LISTENING,
+                state == VoiceConversationController.State.PROCESSING);
+        assistantPanelEffects.setVoiceState(state == VoiceConversationController.State.LISTENING,
+                state == VoiceConversationController.State.PROCESSING);
         voiceButton.setContentDescription(active
                 ? getString(R.string.stop_voice_chat)
                 : getString(R.string.start_voice_chat));
-        voiceButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
-                getColor(active ? R.color.warning : R.color.accent)));
+        voiceButton.setImageTintList(android.content.res.ColorStateList.valueOf(
+                getColor(R.color.text_primary)));
         if (state == VoiceConversationController.State.LISTENING) {
             voiceStatusText.setText(R.string.voice_listening);
             setAvatarState("listening", R.string.avatar_listening);
@@ -619,6 +685,7 @@ public final class MainActivity extends Activity {
                 ? LocalIntentParser.parse(text)
                 : null;
         if (localAction != null) {
+            showAvatarWelcomeOnLaunch = false;
             long localStartedAt = SystemClock.elapsedRealtime();
             ChatMessage userMessage = new ChatMessage(ChatMessage.ROLE_USER, text);
             userMessage.mode = ChatMessage.MODE_CHAT;
@@ -650,6 +717,7 @@ public final class MainActivity extends Activity {
         }
 
         ChatMessage userMessage = new ChatMessage(ChatMessage.ROLE_USER, text);
+        showAvatarWelcomeOnLaunch = false;
         userMessage.mode = ChatMessage.MODE_CHAT;
         userMessage.imageUri = pendingImageUri;
         userMessage.imageMime = pendingImageMime;
@@ -667,8 +735,9 @@ public final class MainActivity extends Activity {
     }
 
     private void sendImageMessage() {
-        String prompt = messageInput.getText().toString().trim();
-        if (prompt.isEmpty()) {
+        if (busy) return;
+        String description = imageWorkbench.description();
+        if (description.isEmpty()) {
             Toast.makeText(this, "请输入生图描述", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -680,7 +749,9 @@ public final class MainActivity extends Activity {
             return;
         }
 
-        ChatMessage userMessage = new ChatMessage(ChatMessage.ROLE_USER, prompt);
+        String prompt = imageWorkbench.generationPrompt();
+        ImageGenerationOptions options = imageWorkbench.options();
+        ChatMessage userMessage = new ChatMessage(ChatMessage.ROLE_USER, description);
         userMessage.mode = ChatMessage.MODE_IMAGE;
         userMessage.imageUri = pendingImageUri;
         userMessage.imageMime = pendingImageMime;
@@ -689,9 +760,10 @@ public final class MainActivity extends Activity {
         ChatMessage responseMessage = new ChatMessage(ChatMessage.ROLE_ASSISTANT, "");
         responseMessage.mode = ChatMessage.MODE_IMAGE;
         responseMessage.imagePrompt = prompt;
+        responseMessage.imageSize = options.size;
+        responseMessage.imageQuality = options.quality;
         messages.add(responseMessage);
         saveConversation();
-        messageInput.setText("");
         clearPendingImage();
         hideKeyboard();
         beginImageRequest(settings, prompt, responseMessage, userMessage);
@@ -702,6 +774,7 @@ public final class MainActivity extends Activity {
             List<ChatMessage> requestMessages,
             ChatMessage responseMessage,
             String userText) {
+        showAvatarWelcomeOnLaunch = false;
         speechController.stop();
         activeMessage = responseMessage;
         activeMode = ChatMessage.MODE_CHAT;
@@ -784,6 +857,12 @@ public final class MainActivity extends Activity {
                             return;
                         }
                     }
+                    OpenAiClient.ToolCall weatherCall = findWeatherToolCall();
+                    if (activeMessage != null && weatherCall != null) {
+                        pendingToolCalls.clear();
+                        beginWeatherRequest(weatherCall, generation);
+                        return;
+                    }
                     if (activeMessage != null && !pendingToolCalls.isEmpty()) {
                         appendToolResults(activeMessage, userText);
                     } else if (activeMessage != null && activeMessage.content.trim().isEmpty()) {
@@ -851,6 +930,7 @@ public final class MainActivity extends Activity {
                 settings,
                 prompt,
                 referenceImage,
+                new ImageGenerationOptions(responseMessage.imageSize, responseMessage.imageQuality),
                 new OpenAiClient.ImageListener() {
                     @Override
                     public void onSuccess(OpenAiClient.ImageResult image) {
@@ -891,6 +971,219 @@ public final class MainActivity extends Activity {
             }
         }
         return null;
+    }
+
+    private OpenAiClient.ToolCall findWeatherToolCall() {
+        for (OpenAiClient.ToolCall call : pendingToolCalls) {
+            if ("get_weather".equals(call.name)) {
+                return call;
+            }
+        }
+        return null;
+    }
+
+    private void beginWeatherRequest(OpenAiClient.ToolCall call, int generation) {
+        String location;
+        int forecastDays;
+        boolean useCurrentLocation;
+        try {
+            JSONObject arguments = new JSONObject(call.arguments);
+            location = arguments.optString("location").trim();
+            forecastDays = Math.max(1, Math.min(7, arguments.optInt("forecast_days", 3)));
+            useCurrentLocation = arguments.optBoolean("use_current_location", false);
+        } catch (Exception exception) {
+            location = "";
+            forecastDays = 3;
+            useCurrentLocation = true;
+        }
+        activeHandle = null;
+        activeMode = MODE_WEATHER;
+        if (useCurrentLocation || location.isEmpty() || isCurrentLocationName(location)) {
+            beginCurrentLocationWeather(forecastDays, generation);
+            return;
+        }
+        String queryLocation = location;
+        int queryDays = forecastDays;
+        activeMessage.content = "正在查询" + queryLocation + "的天气…";
+        refreshMessages();
+        executeWeatherRequest(generation, () -> weatherClient.query(queryLocation, queryDays));
+    }
+
+    private boolean isCurrentLocationName(String location) {
+        String normalized = location.replace(" ", "");
+        return "当前位置".equals(normalized)
+                || "当前城市".equals(normalized)
+                || "这里".equals(normalized)
+                || "本地".equals(normalized)
+                || "我这里".equals(normalized);
+    }
+
+    private void beginCurrentLocationWeather(int days, int generation) {
+        activeMessage.content = "正在获取当前位置…";
+        refreshMessages();
+        if (checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            pendingLocationWeatherDays = days;
+            pendingLocationWeatherGeneration = generation;
+            requestPermissions(
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    REQUEST_LOCATION);
+            return;
+        }
+        startLocationLookup(days, generation);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void startLocationLookup(int days, int generation) {
+        cancelLocationLookup();
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (locationManager == null) {
+            failWeatherRequest("设备没有可用的定位服务，请直接告诉我要查询的城市。");
+            return;
+        }
+        List<String> providers = locationManager.getProviders(true);
+        Location best = null;
+        for (String provider : providers) {
+            try {
+                Location candidate = locationManager.getLastKnownLocation(provider);
+                if (candidate != null && (best == null || candidate.getTime() > best.getTime())) {
+                    best = candidate;
+                }
+            } catch (SecurityException ignored) {
+                // Some providers require precise location; city weather only requests coarse access.
+            }
+        }
+        if (best != null
+                && Math.abs(System.currentTimeMillis() - best.getTime()) <= LOCATION_CACHE_MAX_AGE_MS) {
+            queryWeatherAtLocation(best, days, generation);
+            return;
+        }
+        fallbackLocation = best;
+        activeMessage.content = "正在定位并查询天气…";
+        refreshMessages();
+        activeLocationListener = location -> {
+            cancelLocationLookup();
+            queryWeatherAtLocation(location, days, generation);
+        };
+        boolean requested = false;
+        for (String provider : providers) {
+            if (LocationManager.GPS_PROVIDER.equals(provider)
+                    && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                continue;
+            }
+            try {
+                locationManager.requestLocationUpdates(
+                        provider,
+                        0L,
+                        0f,
+                        activeLocationListener,
+                        Looper.getMainLooper());
+                requested = true;
+            } catch (Exception ignored) {
+                // Try the next enabled provider.
+            }
+        }
+        if (!requested) {
+            if (fallbackLocation != null) {
+                Location fallback = fallbackLocation;
+                cancelLocationLookup();
+                queryWeatherAtLocation(fallback, days, generation);
+            } else {
+                failWeatherRequest("定位服务不可用，请开启系统定位，或直接告诉我要查询的城市。");
+            }
+            return;
+        }
+        locationTimeout = () -> {
+            Location fallback = fallbackLocation;
+            cancelLocationLookup();
+            if (!busy || generation != requestGeneration) {
+                return;
+            }
+            if (fallback != null) {
+                queryWeatherAtLocation(fallback, days, generation);
+            } else {
+                failWeatherRequest("暂时无法获取当前位置，请稍后重试或直接告诉我要查询的城市。");
+            }
+        };
+        mainHandler.postDelayed(locationTimeout, LOCATION_TIMEOUT_MS);
+    }
+
+    private void queryWeatherAtLocation(Location location, int days, int generation) {
+        if (!busy || generation != requestGeneration || activeMessage == null) {
+            return;
+        }
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        activeMessage.content = "已获取当前位置，正在查询天气…";
+        refreshMessages();
+        executeWeatherRequest(
+                generation,
+                () -> weatherClient.query(latitude, longitude, days));
+    }
+
+    private void executeWeatherRequest(int generation, WeatherQuery query) {
+        networkExecutor.execute(() -> {
+            try {
+                String result = query.execute();
+                runOnUiThread(() -> {
+                    if (!busy || generation != requestGeneration || activeMessage == null) {
+                        return;
+                    }
+                    activeMessage.content = result;
+                    activeMessage.error = false;
+                    activeMessage.retryable = false;
+                    activeMessage.meta = formatModelDuration(elapsedRequestMs());
+                    finishRequest();
+                });
+            } catch (Exception exception) {
+                String message = exception.getMessage() == null
+                        ? "无法连接天气服务"
+                        : exception.getMessage();
+                runOnUiThread(() -> {
+                    if (!busy || generation != requestGeneration || activeMessage == null) {
+                        return;
+                    }
+                    activeMessage.content = "天气查询失败：" + message;
+                    activeMessage.error = true;
+                    activeMessage.retryable = true;
+                    activeMessage.meta = formatModelDuration(elapsedRequestMs());
+                    finishRequest();
+                });
+            }
+        });
+    }
+
+    private void failWeatherRequest(String message) {
+        cancelLocationLookup();
+        if (activeMessage == null) {
+            return;
+        }
+        activeMessage.content = "天气查询失败：" + message;
+        activeMessage.error = true;
+        activeMessage.retryable = true;
+        activeMessage.meta = formatModelDuration(elapsedRequestMs());
+        finishRequest();
+    }
+
+    private void cancelLocationLookup() {
+        if (locationTimeout != null) {
+            mainHandler.removeCallbacks(locationTimeout);
+            locationTimeout = null;
+        }
+        if (locationManager != null && activeLocationListener != null) {
+            try {
+                locationManager.removeUpdates(activeLocationListener);
+            } catch (SecurityException ignored) {
+                // Permission may have been revoked while the request was active.
+            }
+        }
+        activeLocationListener = null;
+        fallbackLocation = null;
+    }
+
+    private interface WeatherQuery {
+        String execute() throws Exception;
     }
 
     private String readImagePrompt(OpenAiClient.ToolCall call) {
@@ -949,6 +1242,8 @@ public final class MainActivity extends Activity {
             return;
         }
         requestGeneration++;
+        cancelLocationLookup();
+        pendingLocationWeatherGeneration = -1;
         if (activeHandle != null) {
             activeHandle.cancel();
         }
@@ -958,6 +1253,8 @@ public final class MainActivity extends Activity {
         if (activeMessage != null && ChatMessage.MODE_IMAGE.equals(activeMode)) {
             activeMessage.content = "已停止生成图片。";
             speechController.stop();
+        } else if (activeMessage != null && MODE_WEATHER.equals(activeMode)) {
+            activeMessage.content = "已停止天气查询。";
         }
         if (activeMessage != null) {
             activeMessage.error = true;
@@ -969,6 +1266,7 @@ public final class MainActivity extends Activity {
     }
 
     private void finishRequest() {
+        cancelLocationLookup();
         ChatMessage completedMessage = activeMessage;
         boolean streamingSpeech = speechController.isStreaming(completedMessage);
         if (streamingSpeech) {
@@ -1001,6 +1299,7 @@ public final class MainActivity extends Activity {
                     stopGeneration();
                     speechController.stop();
                     messages.clear();
+                    showAvatarWelcomeOnLaunch = true;
                     saveConversation();
                     adapter.notifyDataSetChanged();
                     statusText.setText(R.string.welcome);
@@ -1012,12 +1311,21 @@ public final class MainActivity extends Activity {
         voiceController.cancel();
         stopGeneration();
         speechController.stop();
+        showAvatarWelcomeOnLaunch = true;
+        imageWorkbench.clearDraft();
+        if (messages.isEmpty()) {
+            messageInput.setText("");
+            clearPendingImage();
+            updateNodeStatus();
+            return;
+        }
         saveConversation();
         conversationStore.createConversation();
         messages.clear();
         messageInput.setText("");
         clearPendingImage();
         adapter.notifyDataSetChanged();
+        updateModeViews();
         updateNodeStatus();
     }
 
@@ -1025,6 +1333,7 @@ public final class MainActivity extends Activity {
         voiceController.cancel();
         stopGeneration();
         speechController.stop();
+        showAvatarWelcomeOnLaunch = false;
         messages.clear();
         messages.addAll(conversationStore.load());
         if (markInterruptedMessages()) {
@@ -1032,6 +1341,7 @@ public final class MainActivity extends Activity {
         }
         messageInput.setText("");
         clearPendingImage();
+        imageWorkbench.updateGallery(conversationStore.generatedImages());
         refreshMessages(false);
         updateNodeStatus();
     }
@@ -1045,10 +1355,11 @@ public final class MainActivity extends Activity {
         }
         messageInput.setEnabled(!value);
         attachmentButton.setEnabled(!value);
-        chatButton.setEnabled(!value);
-        imageButton.setEnabled(!value);
-        sendButton.setText(value ? R.string.stop : R.string.send);
-        sendButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+        chatButton.setEnabled(true);
+        imageButton.setEnabled(true);
+        sendButton.setContentDescription(getString(value ? R.string.stop : R.string.send));
+        sendButton.setImageResource(value ? R.drawable.ic_stop : R.drawable.ic_send);
+        sendButton.setImageTintList(android.content.res.ColorStateList.valueOf(
                 getColor(value ? R.color.warning : R.color.accent)));
         if (value) {
             statusText.setText(ChatMessage.MODE_IMAGE.equals(activeMode)
@@ -1061,13 +1372,10 @@ public final class MainActivity extends Activity {
     }
 
     private void setSelectedMode(String mode) {
-        if (busy) {
-            return;
-        }
+        hideKeyboard();
         selectedMode = ChatMessage.MODE_IMAGE.equals(mode)
                 ? ChatMessage.MODE_IMAGE
                 : ChatMessage.MODE_CHAT;
-        interactiveTextInput = false;
         if (ChatMessage.MODE_IMAGE.equals(selectedMode)) {
             voiceController.cancel();
         }
@@ -1075,25 +1383,206 @@ public final class MainActivity extends Activity {
         updateNodeStatus();
     }
 
+    private void createWorkspaceViews() {
+        LinearLayout root = (LinearLayout) avatarStage.getParent();
+        LinearLayout switcher = new LinearLayout(this);
+        switcher.setId(R.id.chatViewSwitcher);
+        switcher.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        switcher.setPadding(sx(14), sx(4), sx(14), sx(4));
+        TextView title = new TextView(this);
+        title.setText("当前对话");
+        title.setTextColor(0xFF85BEDB);
+        setTextPx(title, 12);
+        switcher.addView(title, new LinearLayout.LayoutParams(0, -1, 1));
+        title.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        characterViewButton = workspaceViewButton("人物", R.id.characterViewButton);
+        conversationViewButton = workspaceViewButton("聊天", R.id.conversationViewButton);
+        switcher.addView(characterViewButton, new LinearLayout.LayoutParams(sx(66), sx(30)));
+        switcher.addView(conversationViewButton, new LinearLayout.LayoutParams(sx(66), sx(30)));
+        characterViewButton.setOnClickListener(v -> setChatView(false));
+        conversationViewButton.setOnClickListener(v -> setChatView(true));
+        chatViewSwitcher = switcher;
+        root.addView(switcher, root.indexOfChild(avatarStage), new LinearLayout.LayoutParams(-1, sx(38)));
+
+        imageWorkbench = new ImageWorkbenchView(this, new ImageWorkbenchView.Actions() {
+            public void generate() { if (busy) stopGeneration(); else sendImageMessage(); }
+            public void pickReference() { pickImage(); }
+            public void clearReference() { clearPendingImage(); }
+            public void retry() {
+                for (int i = messages.size() - 1; i >= 0; i--) {
+                    ChatMessage message = messages.get(i);
+                    if (ChatMessage.ROLE_ASSISTANT.equals(message.role) && ChatMessage.MODE_IMAGE.equals(message.mode)) {
+                        retryMessage(i);
+                        return;
+                    }
+                }
+            }
+            public void openImage(ChatMessage image, List<ChatMessage> gallery) { MainActivity.this.openImage(image, gallery); }
+        });
+        imageWorkbench.setVisibility(View.GONE);
+        root.addView(imageWorkbench, root.indexOfChild(messageList), new LinearLayout.LayoutParams(-1, 0, 1));
+    }
+
+    private Button workspaceViewButton(String title, int id) {
+        Button button = new Button(this);
+        button.setId(id);
+        button.setText(title);
+        button.setTextColor(0xFFB8E9FF);
+        setTextPx(button, 13);
+        button.setMinWidth(0);
+        button.setMinHeight(0);
+        button.setPadding(0, 0, 0, 0);
+        button.setBackground(new CyberPanelDrawable(this, CyberPanelDrawable.Kind.ACTION));
+        return button;
+    }
+
+    private void updateWorkbenchStatus() {
+        ChatMessage latest = null;
+        for (int i = messages.size() - 1; i >= 0; i--) {
+            ChatMessage candidate = messages.get(i);
+            if (ChatMessage.ROLE_ASSISTANT.equals(candidate.role) && ChatMessage.MODE_IMAGE.equals(candidate.mode)) {
+                latest = candidate;
+                break;
+            }
+        }
+        imageWorkbench.updateJob(busy, ChatMessage.MODE_IMAGE.equals(activeMode), latest);
+    }
+
+    private void applyReferenceLayoutMetrics() {
+        View header = findViewById(R.id.headerRow);
+        View tabs = findViewById(R.id.modeTabsRow);
+        ImageView brandIcon = findViewById(R.id.brandIcon);
+        ImageView wordmark = findViewById(R.id.brandWordmark);
+        Button history = findViewById(R.id.historyButton);
+        Button newConversation = findViewById(R.id.newConversationButton);
+
+        // Dimensions recovered from NING 2.3.23; sx uses that phone's dp baseline.
+        setDesignSize(header, -1, 72);
+        header.setPadding(sx(14), 0, sx(10), 0);
+        setDesignSize(brandIcon, 48, 48);
+        setDesignSize(wordmark, 60, 20);
+        setStartMargin(findViewById(R.id.titleSettingsButton), 8);
+
+        // The old 68dp text-only controls need extra width for the added icons.
+        setDesignSize(history, 88, 32);
+        setDesignSize(newConversation, 80, 32);
+        setStartMargin(newConversation, 5);
+        styleHeaderButton(history);
+        styleHeaderButton(newConversation);
+        setTextPx(activeModelText, 11);
+
+        setDesignSize(tabs, -1, 52);
+        tabs.setPadding(sx(14), sx(7), sx(14), sx(7));
+        setDesignSize(chatButton, -2, 38);
+        setDesignSize(imageButton, -2, 38);
+        setStartMargin(imageButton, -4);
+        chatButton.setPadding(0, 0, 0, 0);
+        imageButton.setPadding(0, 0, 0, 0);
+        chatButton.setBackgroundResource(R.drawable.bg_tab_chat);
+        imageButton.setBackgroundResource(R.drawable.bg_tab_image);
+        setTextPx(chatButton, 14);
+        setTextPx(imageButton, 14);
+
+        messageList.setPadding(0, sx(8), 0, sx(8));
+        setDesignSize(attachmentBar, -1, 58);
+        setDesignSize(attachmentPreview, 42, 42);
+        setDesignSize(findViewById(R.id.removeAttachmentButton), 58, 42);
+        setTextPx(attachmentText, 13);
+
+        composerRow.setMinimumHeight(sx(70));
+        composerRow.setPadding(sx(12), sx(7), sx(12), sx(11));
+        composerRow.setBackground(new CyberPanelDrawable(this, CyberPanelDrawable.Kind.DOCK));
+        setDesignSize(attachmentButton, 48, 52);
+        setDesignSize(voiceModeButton, 48, 52);
+        setDesignSize(sendButton, 64, 52);
+        setStartMargin(voiceModeButton, 4);
+        setStartMargin(messageInput, 7);
+        setStartMargin(sendButton, 7);
+        attachmentButton.setBackground(new CyberPanelDrawable(this, CyberPanelDrawable.Kind.ACTION));
+        voiceModeButton.setBackground(new CyberPanelDrawable(this, CyberPanelDrawable.Kind.ACTION));
+        sendButton.setBackground(new CyberPanelDrawable(this, CyberPanelDrawable.Kind.SEND));
+        attachmentButton.setPadding(sx(12), sx(14), sx(12), sx(14));
+        attachmentButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        sendButton.setPadding(sx(18), sx(12), sx(18), sx(12));
+        voiceModeButton.setPadding(sx(13), sx(13), sx(13), sx(13));
+        ((ImageView) voiceModeButton).setScaleType(ImageView.ScaleType.FIT_CENTER);
+        messageInput.setBackground(new CyberPanelDrawable(this, CyberPanelDrawable.Kind.INPUT));
+        messageInput.setMinHeight(sx(52));
+        messageInput.setMinimumHeight(sx(52));
+        messageInput.setMaxLines(5);
+        messageInput.setPadding(sx(12), sx(12), sx(12), sx(12));
+        messageInput.setTextColor(0xFFE0F4FF);
+        messageInput.setHintTextColor(0xFF689CBB);
+        setTextPx(messageInput, 18);
+        setTextPx(statusText, 11);
+        statusText.setMinimumHeight(sx(22));
+    }
+
+    private void styleHeaderButton(Button button) {
+        setTextPx(button, 11);
+        button.setPadding(sx(6), 0, sx(6), 0);
+        button.setCompoundDrawablePadding(sx(5));
+        Drawable icon = button.getCompoundDrawablesRelative()[0];
+        if (icon != null) {
+            icon.setBounds(0, 0, sx(16), sx(16));
+            button.setCompoundDrawablesRelative(icon, null, null, null);
+        }
+    }
+
+    private void setTextPx(TextView view, int referenceSp) {
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, DesignScale.referenceSp(this, referenceSp));
+    }
+
+    private void setDesignSize(View view, int width, int height) {
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (width >= 0) {
+            params.width = sx(width);
+        } else if (width == -1) {
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
+        if (height >= 0) {
+            params.height = sx(height);
+        }
+        view.setLayoutParams(params);
+    }
+
+    private void setStartMargin(View view, int designPixels) {
+        ViewGroup.LayoutParams rawParams = view.getLayoutParams();
+        if (rawParams instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rawParams;
+            params.setMarginStart(designPixels < 0 ? -sx(-designPixels) : sx(designPixels));
+            view.setLayoutParams(params);
+        }
+    }
+
+    private int sx(float designPixels) {
+        return DesignScale.referenceDp(this, designPixels);
+    }
+
     private void updateModeViews() {
         boolean imageMode = ChatMessage.MODE_IMAGE.equals(selectedMode);
-        boolean interactive = avatarEnabled && !imageMode;
-        boolean immersiveVoice = interactive && !interactiveTextInput;
+        boolean showAvatarStage = avatarEnabled && !imageMode && !interactiveTextInput;
+        boolean immersiveVoice = showAvatarStage;
         chatButton.setTextColor(getColor(imageMode ? R.color.text_secondary : R.color.text_primary));
         imageButton.setTextColor(getColor(imageMode ? R.color.text_primary : R.color.text_secondary));
-        chatButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
-                getColor(imageMode ? R.color.surface : R.color.accent_dark)));
-        imageButton.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
-                getColor(imageMode ? R.color.accent_dark : R.color.surface)));
-        avatarStage.setVisibility(interactive ? View.VISIBLE : View.GONE);
-        messageList.setVisibility(interactive ? View.GONE : View.VISIBLE);
-        statusText.setVisibility(immersiveVoice ? View.GONE : View.VISIBLE);
-        composerRow.setVisibility(immersiveVoice ? View.GONE : View.VISIBLE);
-        attachmentBar.setVisibility(!immersiveVoice && !pendingImageUri.isEmpty()
+        chatButton.setSelected(!imageMode);
+        imageButton.setSelected(imageMode);
+        avatarStage.setVisibility(showAvatarStage ? View.VISIBLE : View.GONE);
+        chatViewSwitcher.setVisibility(!imageMode && avatarEnabled ? View.VISIBLE : View.GONE);
+        characterViewButton.setEnabled(avatarEnabled);
+        characterViewButton.setSelected(showAvatarStage);
+        conversationViewButton.setSelected(!showAvatarStage);
+        imageWorkbench.setVisibility(imageMode ? View.VISIBLE : View.GONE);
+        messageList.setVisibility(!imageMode && !showAvatarStage ? View.VISIBLE : View.GONE);
+        boolean showStatus = !imageMode && !immersiveVoice
+                && (busy || speechState != SpeechController.State.IDLE);
+        statusText.setVisibility(showStatus ? View.VISIBLE : View.GONE);
+        composerRow.setVisibility(imageMode || immersiveVoice ? View.GONE : View.VISIBLE);
+        attachmentBar.setVisibility(!imageMode && !immersiveVoice && !pendingImageUri.isEmpty()
                 ? View.VISIBLE : View.GONE);
         voiceControls.setVisibility(immersiveVoice ? View.VISIBLE : View.GONE);
-        voiceModeButton.setVisibility(interactiveTextInput ? View.VISIBLE : View.GONE);
-        attachmentButton.setVisibility(interactiveTextInput ? View.GONE : View.VISIBLE);
+        voiceModeButton.setVisibility(avatarEnabled && interactiveTextInput ? View.VISIBLE : View.GONE);
+        attachmentButton.setVisibility(View.VISIBLE);
         audioActionButton.setImageResource(busy || speechController.isActive()
                 ? R.drawable.ic_stop
                 : R.drawable.ic_sound_on);
@@ -1102,6 +1591,7 @@ public final class MainActivity extends Activity {
         activeModelText.setText((imageMode ? "生图 · " : "对话 · ")
                 + (imageMode ? settings.imageModel : settings.chatModel));
         updateAvatarDialog();
+        updateWorkbenchStatus();
     }
 
     private void updateAvatarDialog() {
@@ -1125,9 +1615,9 @@ public final class MainActivity extends Activity {
                 || (latest != null && speechController.isStreaming(latest))) {
             avatarDialogRole.setText(avatarDisplayName);
             avatarDialogText.setText("正在思考…");
-        } else if (latest == null) {
+        } else if (showAvatarWelcomeOnLaunch || latest == null) {
             avatarDialogRole.setText(avatarDisplayName);
-            avatarDialogText.setText("你好，今天想聊些什么？");
+            avatarDialogText.setText(R.string.avatar_welcome_message);
         } else {
             avatarDialogRole.setText(ChatMessage.ROLE_USER.equals(latest.role)
                     ? "你" : avatarDisplayName);
@@ -1139,7 +1629,7 @@ public final class MainActivity extends Activity {
         StringBuilder results = new StringBuilder();
         boolean anySuccess = false;
         for (OpenAiClient.ToolCall call : pendingToolCalls) {
-            if ("generate_image".equals(call.name)) {
+            if ("generate_image".equals(call.name) || "get_weather".equals(call.name)) {
                 continue;
             }
             DeviceAction action = actionExecutor.fromToolCall(call);
@@ -1191,6 +1681,7 @@ public final class MainActivity extends Activity {
     private void refreshMessages(boolean scrollToBottom) {
         adapter.notifyDataSetChanged();
         updateAvatarDialog();
+        updateWorkbenchStatus();
         if (scrollToBottom && !messages.isEmpty()) {
             messageList.post(() -> messageList.setSelection(messages.size() - 1));
         }
@@ -1299,17 +1790,28 @@ public final class MainActivity extends Activity {
             Toast.makeText(this, R.string.stop_before_delete, Toast.LENGTH_SHORT).show();
             return;
         }
+        ArrayList<ChatMessage> turn = conversationTurnFor(message);
+        if (turn.isEmpty()) {
+            return;
+        }
+        boolean includesGeneratedImage = false;
+        for (ChatMessage item : turn) {
+            includesGeneratedImage |= item.hasGeneratedImage();
+        }
         new AlertDialog.Builder(this)
                 .setTitle(R.string.delete_message)
-                .setMessage(message.hasGeneratedImage()
+                .setMessage(includesGeneratedImage
                         ? R.string.confirm_delete_generated_message
                         : R.string.confirm_delete_message)
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.delete_message, (dialog, which) -> {
-                    if (speechController.isActive(message)) {
-                        speechController.stop();
+                    for (ChatMessage item : turn) {
+                        if (speechController.isActive(item)) {
+                            speechController.stop();
+                            break;
+                        }
                     }
-                    if (messages.remove(message)) {
+                    if (messages.removeAll(turn)) {
                         saveConversation();
                         refreshMessages();
                     }
@@ -1317,14 +1819,39 @@ public final class MainActivity extends Activity {
                 .show();
     }
 
+    private ArrayList<ChatMessage> conversationTurnFor(ChatMessage selected) {
+        ArrayList<ChatMessage> turn = new ArrayList<>();
+        int selectedIndex = messages.indexOf(selected);
+        if (selectedIndex < 0) {
+            return turn;
+        }
+
+        int start = selectedIndex;
+        while (start > 0 && !ChatMessage.ROLE_USER.equals(messages.get(start).role)) {
+            start--;
+        }
+        if (!ChatMessage.ROLE_USER.equals(messages.get(start).role)) {
+            start = selectedIndex;
+        }
+
+        int end = start + 1;
+        while (end < messages.size()
+                && !ChatMessage.ROLE_USER.equals(messages.get(end).role)) {
+            end++;
+        }
+        turn.addAll(messages.subList(start, end));
+        return turn;
+    }
+
     private void saveConversation() {
         conversationStore.save(messages);
+        if (imageWorkbench != null) imageWorkbench.updateGallery(conversationStore.generatedImages());
     }
 
     private void hideKeyboard() {
         InputMethodManager manager = getSystemService(InputMethodManager.class);
         if (manager != null) {
-            manager.hideSoftInputFromWindow(messageInput.getWindowToken(), 0);
+            manager.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
         }
     }
 
@@ -1374,13 +1901,15 @@ public final class MainActivity extends Activity {
     }
 
     private void showPendingImage() {
+        imageWorkbench.setReference(pendingImageUri, pendingImageName);
         if (pendingImageUri.isEmpty()) {
             attachmentBar.setVisibility(View.GONE);
             attachmentPreview.setImageDrawable(null);
             attachmentText.setText("");
             return;
         }
-        attachmentBar.setVisibility(View.VISIBLE);
+        attachmentBar.setVisibility(!ChatMessage.MODE_IMAGE.equals(selectedMode)
+                && (!avatarEnabled || interactiveTextInput) ? View.VISIBLE : View.GONE);
         attachmentPreview.setImageURI(Uri.parse(pendingImageUri));
         attachmentText.setText(getString(R.string.image_attached, pendingImageName));
     }
@@ -1403,6 +1932,10 @@ public final class MainActivity extends Activity {
     }
 
     private void openImage(ChatMessage message) {
+        openImage(message, messages);
+    }
+
+    private void openImage(ChatMessage message, List<ChatMessage> images) {
         if (!message.hasGeneratedImage()) {
             return;
         }
@@ -1412,11 +1945,11 @@ public final class MainActivity extends Activity {
         intent.putExtra(ImagePreviewActivity.EXTRA_NAME, message.imageName);
         JSONArray gallery = new JSONArray();
         int selectedIndex = 0;
-        for (ChatMessage candidate : messages) {
+        for (ChatMessage candidate : images) {
             if (!candidate.hasGeneratedImage()) {
                 continue;
             }
-            if (candidate == message) {
+            if (candidate.imageUri.equals(message.imageUri)) {
                 selectedIndex = gallery.length();
             }
             try {
