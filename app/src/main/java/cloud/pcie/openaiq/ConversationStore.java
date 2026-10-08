@@ -23,6 +23,7 @@ final class ConversationStore {
     private static final String FILE_NAME = "conversation_history.json";
     private static final int FORMAT_VERSION = 2;
     private static final int MAX_CONVERSATIONS = 50;
+    private static final Object HISTORY_LOCK = new Object();
 
     static final class Summary {
         final String id;
@@ -60,81 +61,137 @@ final class ConversationStore {
         return active == null ? new ArrayList<>() : copyMessages(active.messages);
     }
 
-    synchronized void save(List<ChatMessage> messages) {
+    synchronized String activeConversationId() {
+        return readSnapshot().activeId;
+    }
+
+    synchronized boolean isActiveConversation(String conversationId) {
+        return conversationId != null && conversationId.equals(readSnapshot().activeId);
+    }
+
+    synchronized ChatMessage findMessage(String conversationId, String messageId) {
         Snapshot snapshot = readSnapshot();
-        Conversation active = snapshot.activeConversation();
-        if (messages == null || messages.isEmpty()) {
-            if (active != null) {
-                snapshot.conversations.remove(active);
-                snapshot.activeId = "";
-                writeSnapshot(snapshot);
+        Conversation conversation = snapshot.find(conversationId);
+        if (conversation == null || messageId == null) return null;
+        for (ChatMessage message : conversation.messages) {
+            if (messageId.equals(message.id)) {
+                try {
+                    return ChatMessage.fromJson(message.toJson());
+                } catch (Exception ignored) {
+                    return null;
+                }
             }
-            return;
         }
-        long now = System.currentTimeMillis();
-        if (active == null) {
-            active = new Conversation(newId(), "新对话", now, now, new ArrayList<>());
-            snapshot.conversations.add(active);
-            snapshot.activeId = active.id;
+        return null;
+    }
+
+    synchronized boolean updateMessage(String conversationId, ChatMessage updated) {
+        synchronized (HISTORY_LOCK) {
+            if (updated == null || conversationId == null) return false;
+            Snapshot snapshot = readSnapshot();
+            Conversation conversation = snapshot.find(conversationId);
+            if (conversation == null) return false;
+            for (int index = 0; index < conversation.messages.size(); index++) {
+                if (updated.id.equals(conversation.messages.get(index).id)) {
+                    try {
+                        conversation.messages.set(index, ChatMessage.fromJson(updated.toJson()));
+                    } catch (Exception ignored) {
+                        return false;
+                    }
+                    conversation.updatedAt = System.currentTimeMillis();
+                    writeSnapshot(snapshot);
+                    return true;
+                }
+            }
+            return false;
         }
-        active.messages = copyMessages(messages);
-        active.updatedAt = now;
-        if ("新对话".equals(active.title)) {
-            active.title = autoTitle(active.messages);
+    }
+
+    synchronized void save(List<ChatMessage> messages) {
+        synchronized (HISTORY_LOCK) {
+            Snapshot snapshot = readSnapshot();
+            Conversation active = snapshot.activeConversation();
+            if (messages == null || messages.isEmpty()) {
+                if (active != null) {
+                    snapshot.conversations.remove(active);
+                    snapshot.activeId = "";
+                    writeSnapshot(snapshot);
+                }
+                return;
+            }
+            long now = System.currentTimeMillis();
+            if (active == null) {
+                active = new Conversation(newId(), "新对话", now, now, new ArrayList<>());
+                snapshot.conversations.add(active);
+                snapshot.activeId = active.id;
+            }
+            active.messages = copyMessages(messages);
+            active.updatedAt = now;
+            if ("新对话".equals(active.title)) {
+                active.title = autoTitle(active.messages);
+            }
+            trimOldest(snapshot);
+            writeSnapshot(snapshot);
         }
-        trimOldest(snapshot);
-        writeSnapshot(snapshot);
     }
 
     synchronized String createConversation() {
-        Snapshot snapshot = readSnapshot();
-        Conversation active = snapshot.activeConversation();
-        if (active == null || active.messages.isEmpty()) {
-            return active == null ? "" : active.id;
+        synchronized (HISTORY_LOCK) {
+            Snapshot snapshot = readSnapshot();
+            Conversation active = snapshot.activeConversation();
+            if (active == null || active.messages.isEmpty()) {
+                return active == null ? "" : active.id;
+            }
+            // Keep the new chat transient until its first message is saved.
+            snapshot.activeId = "";
+            writeSnapshot(snapshot);
+            return "";
         }
-        // Keep the new chat transient until its first message is saved.
-        snapshot.activeId = "";
-        writeSnapshot(snapshot);
-        return "";
     }
 
     synchronized boolean selectConversation(String id) {
-        Snapshot snapshot = readSnapshot();
-        if (snapshot.find(id) == null) {
-            return false;
+        synchronized (HISTORY_LOCK) {
+            Snapshot snapshot = readSnapshot();
+            if (snapshot.find(id) == null) {
+                return false;
+            }
+            snapshot.activeId = id;
+            writeSnapshot(snapshot);
+            return true;
         }
-        snapshot.activeId = id;
-        writeSnapshot(snapshot);
-        return true;
     }
 
     synchronized boolean renameConversation(String id, String title) {
-        String clean = cleanLine(title, 40);
-        if (clean.isEmpty()) {
-            return false;
+        synchronized (HISTORY_LOCK) {
+            String clean = cleanLine(title, 40);
+            if (clean.isEmpty()) {
+                return false;
+            }
+            Snapshot snapshot = readSnapshot();
+            Conversation conversation = snapshot.find(id);
+            if (conversation == null) {
+                return false;
+            }
+            conversation.title = clean;
+            conversation.updatedAt = System.currentTimeMillis();
+            writeSnapshot(snapshot);
+            return true;
         }
-        Snapshot snapshot = readSnapshot();
-        Conversation conversation = snapshot.find(id);
-        if (conversation == null) {
-            return false;
-        }
-        conversation.title = clean;
-        conversation.updatedAt = System.currentTimeMillis();
-        writeSnapshot(snapshot);
-        return true;
     }
 
     synchronized boolean deleteConversation(String id) {
-        Snapshot snapshot = readSnapshot();
-        boolean removed = snapshot.conversations.removeIf(item -> item.id.equals(id));
-        if (!removed) {
-            return false;
+        synchronized (HISTORY_LOCK) {
+            Snapshot snapshot = readSnapshot();
+            boolean removed = snapshot.conversations.removeIf(item -> item.id.equals(id));
+            if (!removed) {
+                return false;
+            }
+            if (id.equals(snapshot.activeId)) {
+                snapshot.activeId = snapshot.conversations.isEmpty() ? "" : newest(snapshot.conversations).id;
+            }
+            writeSnapshot(snapshot);
+            return true;
         }
-        if (id.equals(snapshot.activeId)) {
-            snapshot.activeId = snapshot.conversations.isEmpty() ? "" : newest(snapshot.conversations).id;
-        }
-        writeSnapshot(snapshot);
-        return true;
     }
 
     synchronized List<Summary> list() {
@@ -204,6 +261,12 @@ final class ConversationStore {
     }
 
     private Snapshot readSnapshot() {
+        synchronized (HISTORY_LOCK) {
+            return readSnapshotLocked();
+        }
+    }
+
+    private Snapshot readSnapshotLocked() {
         if (!exists()) {
             return new Snapshot();
         }
@@ -261,6 +324,12 @@ final class ConversationStore {
     }
 
     private void writeSnapshot(Snapshot snapshot) {
+        synchronized (HISTORY_LOCK) {
+            writeSnapshotLocked(snapshot);
+        }
+    }
+
+    private void writeSnapshotLocked(Snapshot snapshot) {
         FileOutputStream output = null;
         try {
             JSONArray conversations = new JSONArray();

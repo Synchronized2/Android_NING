@@ -90,6 +90,9 @@ final class SpeechController {
     private int nextJobIndex;
     private int nextPlayIndex;
     private int generation;
+    private ChatMessage notifiedMessage;
+    private State notifiedState;
+    private int notifiedAttempt;
 
     SpeechController(Context context, Listener listener) {
         client = new EdgeTtsClient(context);
@@ -176,7 +179,7 @@ final class SpeechController {
         streaming = stream;
         generating = stream;
         generation++;
-        listener.onStateChanged(message, State.PREPARING, 1);
+        notifyState(message, State.PREPARING, 1);
     }
 
     private void pumpSynthesis(int currentGeneration) {
@@ -198,7 +201,7 @@ final class SpeechController {
         }
         job.attempt++;
         if (player == null && job.index == nextPlayIndex) {
-            listener.onStateChanged(activeMessage, State.PREPARING, job.attempt);
+            notifyState(activeMessage, State.PREPARING, job.attempt);
         }
         job.request = client.synthesize(
                 speechText(job.text),
@@ -266,7 +269,7 @@ final class SpeechController {
         if (job == null) {
             if (preparing.containsKey(nextPlayIndex)) {
                 Job waiting = preparing.get(nextPlayIndex);
-                listener.onStateChanged(
+                notifyState(
                         activeMessage,
                         State.PREPARING,
                         waiting == null ? 1 : Math.max(1, waiting.attempt));
@@ -296,7 +299,7 @@ final class SpeechController {
                 }
                 listener.onPlaybackText(activeMessage, job.text);
                 readyPlayer.start();
-                listener.onStateChanged(activeMessage, State.PLAYING, job.attempt);
+                notifyState(activeMessage, State.PLAYING, job.attempt);
             });
             nextPlayer.setOnCompletionListener(done ->
                     completePlayback(job, currentGeneration));
@@ -341,6 +344,14 @@ final class SpeechController {
         return activeMessage != null && currentGeneration == generation;
     }
 
+    private void notifyState(ChatMessage message, State state, int attempt) {
+        if (notifiedMessage == message && notifiedState == state && notifiedAttempt == attempt) return;
+        notifiedMessage = message;
+        notifiedState = state;
+        notifiedAttempt = attempt;
+        listener.onStateChanged(message, state, attempt);
+    }
+
     private void stopInternal(boolean notify) {
         generation++;
         mainHandler.removeCallbacksAndMessages(null);
@@ -365,6 +376,9 @@ final class SpeechController {
         receivedText = false;
         nextJobIndex = 0;
         nextPlayIndex = 0;
+        notifiedMessage = null;
+        notifiedState = null;
+        notifiedAttempt = 0;
         if (stoppedMessage != null) {
             listener.onPlaybackText(stoppedMessage, "");
             if (notify) {

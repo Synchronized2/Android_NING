@@ -73,6 +73,9 @@ final class EdgeTtsClient {
             String genderLabel = "Female".equalsIgnoreCase(gender) ? "女声"
                     : "Male".equalsIgnoreCase(gender) ? "男声" : gender;
             String name = displayName == null || displayName.isEmpty() ? shortName : displayName;
+            if (name.contains("（") || name.contains("(")) {
+                return name;
+            }
             return name + " · " + locale + (genderLabel.isEmpty() ? "" : " · " + genderLabel);
         }
 
@@ -347,27 +350,32 @@ final class EdgeTtsClient {
         httpClient.connectionPool().evictAll();
     }
 
-    static List<Voice> fallbackVoices() {
+    static List<Voice> curatedVoices() {
         ArrayList<Voice> voices = new ArrayList<>();
-        voices.add(new Voice("zh-CN-XiaoxiaoNeural", "zh-CN", "Female", "晓晓 · 女声 · 温柔"));
-        voices.add(new Voice("zh-CN-YunxiNeural", "zh-CN", "Male", "云希 · 男声 · 清朗"));
-        voices.add(new Voice("zh-CN-YunyangNeural", "zh-CN", "Male", "云扬 · 男声 · 阳光"));
-        voices.add(new Voice("zh-CN-XiaoyiNeural", "zh-CN", "Female", "晓伊 · 女声 · 甜美"));
-        voices.add(new Voice("zh-CN-YunjianNeural", "zh-CN", "Male", "云健 · 男声 · 稳重"));
-        voices.add(new Voice("zh-CN-XiaochenNeural", "zh-CN", "Female", "晓辰 · 女声 · 知性"));
-        voices.add(new Voice("zh-CN-XiaohanNeural", "zh-CN", "Female", "晓涵 · 女声 · 优雅"));
-        voices.add(new Voice("zh-CN-XiaomengNeural", "zh-CN", "Female", "晓梦 · 女声 · 梦幻"));
-        voices.add(new Voice("zh-CN-XiaomoNeural", "zh-CN", "Female", "晓墨 · 女声 · 文艺"));
-        voices.add(new Voice("zh-CN-XiaoqiuNeural", "zh-CN", "Female", "晓秋 · 女声 · 成熟"));
-        voices.add(new Voice("zh-CN-XiaoruiNeural", "zh-CN", "Female", "晓睿 · 女声 · 智慧"));
-        voices.add(new Voice("zh-CN-XiaoshuangNeural", "zh-CN", "Female", "晓双 · 女声 · 活泼"));
-        voices.add(new Voice("zh-CN-XiaoxuanNeural", "zh-CN", "Female", "晓萱 · 女声 · 清新"));
-        voices.add(new Voice("zh-CN-XiaoyanNeural", "zh-CN", "Female", "晓颜 · 女声 · 柔美"));
-        voices.add(new Voice("zh-CN-XiaoyouNeural", "zh-CN", "Female", "晓悠 · 女声 · 悠扬"));
-        voices.add(new Voice("zh-CN-XiaozhenNeural", "zh-CN", "Female", "晓甄 · 女声 · 端庄"));
-        voices.add(new Voice("zh-CN-YunfengNeural", "zh-CN", "Male", "云枫 · 男声 · 磁性"));
-        voices.add(new Voice("zh-CN-YunhaoNeural", "zh-CN", "Male", "云皓 · 男声 · 豪迈"));
-        voices.add(new Voice("zh-CN-YunxiaNeural", "zh-CN", "Male", "云夏 · 男声 · 热情"));
+        voices.add(new Voice("zh-CN-XiaoxiaoNeural", "zh-CN", "Female", "晓晓 Xiaoxiao (女声·温柔)"));
+        voices.add(new Voice("zh-CN-YunxiNeural", "zh-CN", "Male", "云希 Yunxi (男声·清朗)"));
+        voices.add(new Voice("zh-CN-YunyangNeural", "zh-CN", "Male", "云扬 Yunyang (男声·阳光)"));
+        voices.add(new Voice("zh-CN-XiaoyiNeural", "zh-CN", "Female", "晓伊 Xiaoyi (女声·甜美)"));
+        voices.add(new Voice("zh-CN-YunjianNeural", "zh-CN", "Male", "云健 Yunjian (男声·稳重)"));
+        voices.add(new Voice("zh-CN-XiaochenNeural", "zh-CN", "Female", "晓辰 Xiaochen (女声·知性)"));
+        voices.add(new Voice("zh-CN-XiaohanNeural", "zh-CN", "Female", "晓涵 Xiaohan (女声·优雅)"));
+        voices.add(new Voice("zh-CN-XiaomengNeural", "zh-CN", "Female", "晓梦 Xiaomeng (女声·梦幻)"));
+        voices.add(new Voice("zh-CN-XiaomoNeural", "zh-CN", "Female", "晓墨 Xiaomo (女声·文艺)"));
+        voices.add(new Voice("zh-CN-XiaoqiuNeural", "zh-CN", "Female", "晓秋 Xiaoqiu (女声·成熟)"));
+        voices.add(new Voice("zh-CN-XiaoruiNeural", "zh-CN", "Female", "晓睿 Xiaorui (女声·智慧)"));
+        voices.add(new Voice("zh-CN-XiaoshuangNeural", "zh-CN", "Female", "晓双 Xiaoshuang (女声·活泼)"));
+        voices.add(new Voice("zh-CN-XiaoxuanNeural", "zh-CN", "Female", "晓萱 Xiaoxuan (女声·清新)"));
+        voices.add(new Voice("zh-CN-XiaoyanNeural", "zh-CN", "Female", "晓颜 Xiaoyan (女声·柔美)"));
+        voices.add(new Voice("zh-CN-XiaoyouNeural", "zh-CN", "Female", "晓悠 Xiaoyou (女声·悠扬)"));
+        voices.add(new Voice("zh-CN-XiaozhenNeural", "zh-CN", "Female", "晓甄 Xiaozhen (女声·端庄)"));
+        voices.add(new Voice("zh-CN-YunfengNeural", "zh-CN", "Male", "云枫 Yunfeng (男声·磁性)"));
+        voices.add(new Voice("zh-CN-YunhaoNeural", "zh-CN", "Male", "云皓 Yunhao (男声·豪迈)"));
+        voices.add(new Voice("zh-CN-YunxiaNeural", "zh-CN", "Male", "云夏 Yunxia (男声·热情)"));
+        return voices;
+    }
+
+    static List<Voice> fallbackVoices() {
+        ArrayList<Voice> voices = new ArrayList<>(curatedVoices());
         voices.add(new Voice("zh-CN-liaoning-XiaobeiNeural", "zh-CN-liaoning", "Female", "晓北（辽宁）"));
         voices.add(new Voice("zh-CN-shaanxi-XiaoniNeural", "zh-CN-shaanxi", "Female", "晓妮（陕西）"));
         voices.add(new Voice("zh-HK-HiuGaaiNeural", "zh-HK", "Female", "曉佳（粤语）"));

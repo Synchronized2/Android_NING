@@ -167,7 +167,7 @@ public final class SettingsActivity extends Activity {
         List<String> imageCatalog = AppSettings.loadImageModelCatalog(this);
         setSharedModelAdapters(chatCatalog, imageCatalog, settings.chatModel, settings.imageModel);
         setDedicatedModelAdapters(chatCatalog, imageCatalog, settings.chatModel, settings.imageModel);
-        setVoiceAdapter(AppSettings.loadTtsVoiceCatalog(this), settings.ttsVoice);
+        setVoiceAdapter(EdgeTtsClient.curatedVoices(), settings.ttsVoice);
         setStyleAdapter(settings.ttsStyle);
         updateAvatarSelection();
         updateTtsLabels();
@@ -245,16 +245,34 @@ public final class SettingsActivity extends Activity {
 
     private void setVoiceAdapter(List<EdgeTtsClient.Voice> voices, String selectedVoice) {
         curatedVoices = voices == null || voices.isEmpty()
-                ? EdgeTtsClient.fallbackVoices()
+                ? EdgeTtsClient.curatedVoices()
                 : new ArrayList<>(voices);
-        ArrayAdapter<EdgeTtsClient.Voice> adapter = new ArrayAdapter<>(
-                this, R.layout.item_voice_selected, curatedVoices);
+        ArrayList<Object> options = new ArrayList<>();
+        options.add("中文");
+        options.addAll(curatedVoices);
+        ArrayAdapter<Object> adapter = new ArrayAdapter<>(
+                this, R.layout.item_voice_selected, options) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position > 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                TextView row = (TextView) super.getDropDownView(position, convertView, parent);
+                row.setTextColor(getColor(position == 0 ? R.color.accent : R.color.text_primary));
+                row.setTypeface(null, position == 0
+                        ? android.graphics.Typeface.BOLD
+                        : android.graphics.Typeface.NORMAL);
+                return row;
+            }
+        };
         adapter.setDropDownViewResource(R.layout.item_voice_dropdown);
         ttsVoiceSpinner.setAdapter(adapter);
-        int selectedIndex = 0;
+        int selectedIndex = 1;
         for (int index = 0; index < curatedVoices.size(); index++) {
             if (curatedVoices.get(index).shortName.equals(selectedVoice)) {
-                selectedIndex = index;
+                selectedIndex = index + 1;
                 break;
             }
         }
@@ -313,7 +331,7 @@ public final class SettingsActivity extends Activity {
                 runOnUiThread(() -> {
                     voiceCatalogHandle = null;
                     AppSettings.saveTtsVoiceCatalog(SettingsActivity.this, voices);
-                    setVoiceAdapter(voices, selected);
+                    setVoiceAdapter(EdgeTtsClient.curatedVoices(), selected);
                     refreshTtsVoicesButton.setEnabled(true);
                     ttsStatusText.setText(getString(R.string.tts_voices_loaded, voices.size()));
                     ttsStatusText.setTextColor(getColor(R.color.text_secondary));

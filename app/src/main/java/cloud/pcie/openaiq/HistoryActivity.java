@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,6 +99,11 @@ public final class HistoryActivity extends Activity {
     }
 
     private void deleteConversation(ConversationStore.Summary conversation) {
+        ImageGenerationService.Snapshot imageJob = ImageGenerationService.snapshot(this);
+        if (imageJob.running && conversation.id.equals(imageJob.conversationId)) {
+            Toast.makeText(this, R.string.stop_before_delete, Toast.LENGTH_SHORT).show();
+            return;
+        }
         new AlertDialog.Builder(this)
                 .setTitle(R.string.delete_conversation)
                 .setMessage(R.string.confirm_delete_conversation)

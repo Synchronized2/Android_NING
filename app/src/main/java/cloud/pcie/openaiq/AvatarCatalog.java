@@ -18,12 +18,15 @@ final class AvatarCatalog {
         final String name;
         final String family;
         final String preview;
+        final boolean supportsViewModes;
 
-        Avatar(String id, String name, String family, String preview) {
+        Avatar(String id, String name, String family, String preview,
+               boolean supportsViewModes) {
             this.id = id;
             this.name = name;
             this.family = family;
             this.preview = preview;
+            this.supportsViewModes = supportsViewModes;
         }
     }
 
@@ -51,7 +54,8 @@ final class AvatarCatalog {
                 String name = item.optString("name").trim();
                 String preview = item.optString("preview").trim();
                 if (!id.isEmpty() && !name.isEmpty() && !preview.isEmpty()) {
-                    result.add(new Avatar(id, name, item.optString("family"), preview));
+                    result.add(new Avatar(id, name, item.optString("family"), preview,
+                            item.optBoolean("supportsViewModes", true)));
                 }
             }
         } catch (Exception ignored) {

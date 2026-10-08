@@ -33,9 +33,27 @@ public final class LayoutPreviewInstrumentation extends Instrumentation {
         Bundle result = new Bundle();
         Activity activity = null;
         try {
+            if (auditArguments != null && "true".equals(auditArguments.getString("animationOnly"))) {
+                new AvatarAnimationAudit(this).run();
+                result.putString("result", "PASS: animation continues across thinking/answering; no state-triggered refits");
+                finish(Activity.RESULT_OK, result);
+                return;
+            }
+            if (auditArguments != null && "true".equals(auditArguments.getString("imageServiceOnly"))) {
+                new ImageGenerationServiceAudit(this).run();
+                result.putString("result", "PASS: background image service retries three times and supports cancellation");
+                finish(Activity.RESULT_OK, result);
+                return;
+            }
             if (auditArguments != null && "true".equals(auditArguments.getString("allAvatars"))) {
                 new AvatarAudit(this).run(auditArguments);
                 result.putString("result", "Completed model audit; inspect avatar-audit report and screenshots");
+                finish(Activity.RESULT_OK, result);
+                return;
+            }
+            if (auditArguments != null && "true".equals(auditArguments.getString("avatarCapabilities"))) {
+                verifyAvatarCapabilities();
+                result.putString("result", "PASS: view modes follow the selected model's body coverage");
                 finish(Activity.RESULT_OK, result);
                 return;
             }
@@ -351,6 +369,98 @@ public final class LayoutPreviewInstrumentation extends Instrumentation {
                 screen.finish();
             });
         }
+    }
+
+    private void verifyAvatarCapabilities() throws Exception {
+        String originalId = AppSettings.load(getTargetContext()).avatarId;
+        boolean originalFull = AppSettings.loadAvatarFullBody(getTargetContext());
+        Activity screen = startActivitySync(new Intent(getTargetContext(), AvatarLibraryActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        try {
+            focusAvatarByName(screen, "nepgear");
+            awaitAvatarModel(screen, "local-433bef0384bd");
+            runOnMainSync(() -> require(screen.findViewById(R.id.libraryViewModeGroup)
+                    .getVisibility() == View.GONE, "Half-body model still shows view modes"));
+
+            focusAvatarByName(screen, "histoire");
+            awaitAvatarModel(screen, "local-982991b0e2f2");
+            runOnMainSync(() -> require(screen.findViewById(R.id.libraryViewModeGroup)
+                    .getVisibility() == View.VISIBLE, "Full-body model hides view modes"));
+
+            String[][] fixedModels = {
+                    {"Akashi", "local-6227504486bb"},
+                    {"Yukikaze", "local-84c65202f41f"},
+                    {"rem", "local-7811427e85fe"},
+                    {"haru · haru_01", "local-9e9896ed5941"},
+                    {"Pio", "local-d3374d15bb2f"},
+                    {"Pio · model1", "local-59990ad5a3ab"},
+                    {"Pio · model2", "local-44f29798c310"},
+                    {"Pio · model4", "local-78c714ec488c"},
+                    {"Pio · model5", "local-910094048d51"}
+            };
+            for (String[] model : fixedModels) {
+                focusAvatarByName(screen, model[0]);
+                awaitAvatarModel(screen, model[1]);
+                runOnMainSync(() -> require(screen.findViewById(R.id.libraryViewModeGroup)
+                        .getVisibility() == View.GONE,
+                        model[0] + " still shows view modes"));
+            }
+
+            focusAvatarByName(screen, "Pio · model2");
+            awaitAvatarModel(screen, "local-44f29798c310");
+            runOnMainSync(() -> {
+                View use = screen.findViewById(R.id.useAvatarButton);
+                if (use.getVisibility() == View.VISIBLE) use.performClick();
+            });
+
+            Activity main = startActivitySync(new Intent(getTargetContext(), MainActivity.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            try {
+                SystemClock.sleep(3500);
+                runOnMainSync(() -> {
+                    require(main.findViewById(R.id.viewToggleButton).getVisibility() == View.GONE,
+                            "Main stage still shows view modes for Pio model2");
+                    Live2DAvatarView avatar = main.findViewById(R.id.live2dAvatar);
+                    require(avatar.isReadyForModel("local-44f29798c310"),
+                            "Pio model2 did not load on the main stage");
+                });
+                capture(main, "fixed-half-body-pio-model2");
+            } finally {
+                runOnMainSync(main::finish);
+            }
+        } finally {
+            runOnMainSync(() -> {
+                AppSettings.saveAvatarSelection(getTargetContext(), originalId);
+                AppSettings.saveAvatarFullBody(getTargetContext(), originalFull);
+                screen.finish();
+            });
+        }
+    }
+
+    private void focusAvatarByName(Activity screen, String name) {
+        runOnMainSync(() -> {
+            ((EditText) screen.findViewById(R.id.avatarSearchInput)).setText(name);
+            ListView list = screen.findViewById(R.id.avatarList);
+            for (int index = 0; index < list.getCount(); index++) {
+                AvatarCatalog.Avatar avatar = (AvatarCatalog.Avatar) list.getItemAtPosition(index);
+                if (avatar.name.equals(name)) {
+                    list.performItemClick(null, index, list.getItemIdAtPosition(index));
+                    return;
+                }
+            }
+            throw new AssertionError("Avatar not found: " + name);
+        });
+    }
+
+    private void awaitAvatarModel(Activity screen, String id) {
+        Live2DAvatarView preview = screen.findViewById(R.id.avatarLibraryPreview);
+        long deadline = SystemClock.uptimeMillis() + 30000;
+        boolean[] ready = {false};
+        do {
+            runOnMainSync(() -> ready[0] = preview.isReadyForModel(id));
+            if (!ready[0]) SystemClock.sleep(250);
+        } while (!ready[0] && SystemClock.uptimeMillis() < deadline);
+        require(ready[0], "Avatar did not load within 30 seconds: " + id);
     }
 
     private void capture(Activity screen, String label) throws Exception {

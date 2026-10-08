@@ -113,6 +113,7 @@
     "id": "local-6de22b43ba65",
     "name": "Javelin",
     "family": "碧蓝航线",
+    "supportsViewModes": false,
     "generation": 3,
     "model": "models/local-6de22b43ba65/model.moc3",
     "textures": [
@@ -300,6 +301,7 @@
     "id": "local-a60b422bcd02",
     "name": "Laffey",
     "family": "碧蓝航线",
+    "supportsViewModes": false,
     "generation": 3,
     "model": "models/local-a60b422bcd02/model.moc3",
     "textures": [
@@ -329,6 +331,7 @@
     "id": "local-29ba1afcca6a",
     "name": "Ayanami",
     "family": "碧蓝航线",
+    "supportsViewModes": false,
     "generation": 3,
     "model": "models/local-29ba1afcca6a/model.moc3",
     "textures": [
@@ -344,6 +347,7 @@
     "id": "local-6227504486bb",
     "name": "Akashi",
     "family": "碧蓝航线",
+    "supportsViewModes": false,
     "generation": 3,
     "model": "models/local-6227504486bb/model.moc3",
     "textures": [
@@ -369,6 +373,14 @@
   {
     "id": "local-7342b5d7c248",
     "name": "Ping Hai",
+    "parameterAliases": {
+      "ParamAngleX": "pnghailianX",
+      "ParamAngleY": "pinghailianY",
+      "ParamAngleZ": "PINGHAIJIAODUZ",
+      "ParamEyeLOpen": "pinghaizuomukaibi",
+      "ParamEyeROpen": "pingyoumukaibi",
+      "ParamMouthOpenY": "pinghaikoukaibi"
+    },
     "framingParts": ["Part"],
     "excludedParts": ["Part100"],
     "family": "碧蓝航线",
@@ -486,6 +498,7 @@
     "id": "local-84c65202f41f",
     "name": "Yukikaze",
     "family": "碧蓝航线",
+    "supportsViewModes": false,
     "generation": 3,
     "model": "models/local-84c65202f41f/model.moc3",
     "textures": [
@@ -515,6 +528,7 @@
     "id": "local-fa1e2c564c99",
     "name": "Z23",
     "family": "碧蓝航线",
+    "supportsViewModes": false,
     "generation": 3,
     "model": "models/local-fa1e2c564c99/model.moc3",
     "textures": [
@@ -755,6 +769,7 @@
     "id": "local-7811427e85fe",
     "name": "rem",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/rem/model.json",
     "preview": "legacy/previews/local-7811427e85fe.png"
@@ -763,6 +778,7 @@
     "id": "local-00c9d7630bfd",
     "name": "shizuku",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/shizuku/shizuku.model.json",
     "preview": "legacy/previews/local-00c9d7630bfd.png"
@@ -771,6 +787,7 @@
     "id": "local-1992a3ccd093",
     "name": "sagiri",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/sagiri/sagiri.model.json",
     "preview": "legacy/previews/local-1992a3ccd093.png"
@@ -779,6 +796,7 @@
     "id": "local-9e9896ed5941",
     "name": "haru · haru_01",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/haru/haru_01.model.json",
     "preview": "legacy/previews/local-9e9896ed5941.png"
@@ -787,6 +805,7 @@
     "id": "local-9085ca81c8c4",
     "name": "Epsilon2.1",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/Epsilon2.1/Epsilon2.1.model.json",
     "preview": "legacy/previews/local-9085ca81c8c4.png"
@@ -1131,6 +1150,8 @@
     "id": "local-60368d85cc01",
     "name": "blanc_classic",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/blanc_classic/index.json",
     "preview": "legacy/previews/local-60368d85cc01.png"
@@ -1139,6 +1160,8 @@
     "id": "local-d0220dfa40a1",
     "name": "blanc_normal",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/blanc_normal/index.json",
     "preview": "legacy/previews/local-d0220dfa40a1.png"
@@ -1147,6 +1170,8 @@
     "id": "local-b4964b4b123b",
     "name": "blanc_swimwear",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/blanc_swimwear/index.json",
     "preview": "legacy/previews/local-b4964b4b123b.png"
@@ -1155,6 +1180,7 @@
     "id": "local-982991b0e2f2",
     "name": "histoire",
     "family": "超次元游戏",
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/histoire/index.json",
     "preview": "legacy/previews/local-982991b0e2f2.png"
@@ -1163,6 +1189,7 @@
     "id": "local-54038cd84578",
     "name": "histoirenohover",
     "family": "超次元游戏",
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/histoirenohover/index.json",
     "preview": "legacy/previews/local-54038cd84578.png"
@@ -1171,6 +1198,8 @@
     "id": "local-433bef0384bd",
     "name": "nepgear",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/nepgear/index.json",
     "preview": "legacy/previews/local-433bef0384bd.png"
@@ -1179,6 +1208,8 @@
     "id": "local-7c94ee170e4f",
     "name": "nepgear_extra",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/nepgear_extra/index.json",
     "preview": "legacy/previews/local-7c94ee170e4f.png"
@@ -1187,6 +1218,8 @@
     "id": "local-c8ef947b2730",
     "name": "nepgearswim",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/nepgearswim/index.json",
     "preview": "legacy/previews/local-c8ef947b2730.png"
@@ -1195,6 +1228,8 @@
     "id": "local-5655961e8bc6",
     "name": "nepmaid",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/nepmaid/index.json",
     "preview": "legacy/previews/local-5655961e8bc6.png"
@@ -1203,6 +1238,8 @@
     "id": "local-0db364be7671",
     "name": "nepnep",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/nepnep/index.json",
     "preview": "legacy/previews/local-0db364be7671.png"
@@ -1211,6 +1248,8 @@
     "id": "local-2a1230ad910a",
     "name": "nepswim",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/nepswim/index.json",
     "preview": "legacy/previews/local-2a1230ad910a.png"
@@ -1219,6 +1258,8 @@
     "id": "local-1d168ab09c1d",
     "name": "neptune_classic",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/neptune_classic/index.json",
     "preview": "legacy/previews/local-1d168ab09c1d.png"
@@ -1227,6 +1268,8 @@
     "id": "local-f37064a594fb",
     "name": "neptune_santa",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/neptune_santa/index.json",
     "preview": "legacy/previews/local-f37064a594fb.png"
@@ -1235,6 +1278,8 @@
     "id": "local-4b69a2587fd7",
     "name": "noir",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/noir/index.json",
     "preview": "legacy/previews/local-4b69a2587fd7.png"
@@ -1243,6 +1288,8 @@
     "id": "local-c677f4738e50",
     "name": "noir_classic",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/noir_classic/index.json",
     "preview": "legacy/previews/local-c677f4738e50.png"
@@ -1251,6 +1298,8 @@
     "id": "local-e0a4fb25d7ea",
     "name": "noir_santa",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/noir_santa/index.json",
     "preview": "legacy/previews/local-e0a4fb25d7ea.png"
@@ -1259,6 +1308,8 @@
     "id": "local-8f261186e1f1",
     "name": "noireswim",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/noireswim/index.json",
     "preview": "legacy/previews/local-8f261186e1f1.png"
@@ -1267,6 +1318,8 @@
     "id": "local-4f63cad90476",
     "name": "vert_classic",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/vert_classic/index.json",
     "preview": "legacy/previews/local-4f63cad90476.png"
@@ -1275,6 +1328,8 @@
     "id": "local-93743b419aa0",
     "name": "vert_normal",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/vert_normal/index.json",
     "preview": "legacy/previews/local-93743b419aa0.png"
@@ -1283,6 +1338,8 @@
     "id": "local-f9dae2b4b16d",
     "name": "vert_swimwear",
     "family": "超次元游戏",
+    "supportsViewModes": false,
+    "legacyAspectX": 0.6666667,
     "generation": 2,
     "manifest": "legacy/model/HyperdimensionNeptunia/vert_swimwear/index.json",
     "preview": "legacy/previews/local-f9dae2b4b16d.png"
@@ -1299,6 +1356,7 @@
     "id": "local-d3374d15bb2f",
     "name": "Pio",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/Pio/model.json",
     "preview": "legacy/previews/local-d3374d15bb2f.png"
@@ -1307,6 +1365,7 @@
     "id": "local-59990ad5a3ab",
     "name": "Pio · model1",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/Pio/model1.json",
     "preview": "legacy/previews/local-59990ad5a3ab.png"
@@ -1315,6 +1374,7 @@
     "id": "local-44f29798c310",
     "name": "Pio · model2",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/Pio/model2.json",
     "preview": "legacy/previews/local-44f29798c310.png"
@@ -1323,6 +1383,7 @@
     "id": "local-78c714ec488c",
     "name": "Pio · model4",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/Pio/model4.json",
     "preview": "legacy/previews/local-78c714ec488c.png"
@@ -1331,6 +1392,7 @@
     "id": "local-910094048d51",
     "name": "Pio · model5",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/Pio/model5.json",
     "preview": "legacy/previews/local-910094048d51.png"
@@ -1347,6 +1409,7 @@
     "id": "local-466bb04075ab",
     "name": "Tia",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/Tia/index.json",
     "preview": "legacy/previews/local-466bb04075ab.png"
@@ -1355,6 +1418,7 @@
     "id": "local-d0defeb18ebd",
     "name": "Tia · index1",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/Tia/index1.json",
     "preview": "legacy/previews/local-d0defeb18ebd.png"
@@ -1363,6 +1427,7 @@
     "id": "local-9e0957b6ef78",
     "name": "Tia · index2",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/Tia/index2.json",
     "preview": "legacy/previews/local-9e0957b6ef78.png"
@@ -1371,6 +1436,7 @@
     "id": "local-9b324dcb9c00",
     "name": "Tia · index3",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/Tia/index3.json",
     "preview": "legacy/previews/local-9b324dcb9c00.png"
@@ -1379,6 +1445,7 @@
     "id": "local-56fff02da9d1",
     "name": "Tia · index4",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/Tia/index4.json",
     "preview": "legacy/previews/local-56fff02da9d1.png"
@@ -1387,6 +1454,7 @@
     "id": "local-7290c46bcfd9",
     "name": "Tia · index5",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/Tia/index5.json",
     "preview": "legacy/previews/local-7290c46bcfd9.png"
@@ -1427,6 +1495,7 @@
     "id": "local-959f38c5d385",
     "name": "chiaki_kitty",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/chiaki_kitty/chiaki_kitty.model.json",
     "preview": "legacy/previews/local-959f38c5d385.png"
@@ -1435,6 +1504,7 @@
     "id": "local-b81f9cbe18f6",
     "name": "chitose",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/chitose/chitose.model.json",
     "preview": "legacy/previews/local-b81f9cbe18f6.png"
@@ -1966,6 +2036,7 @@
     "id": "local-add456e3403a",
     "name": "hallo_16",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/hallo_16/hallo_16.model.json",
     "preview": "legacy/previews/local-add456e3403a.png"
@@ -1974,6 +2045,7 @@
     "id": "local-a8f1f1107ab9",
     "name": "haru · haru_02",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/haru/haru_02.model.json",
     "preview": "legacy/previews/local-a8f1f1107ab9.png"
@@ -2014,6 +2086,7 @@
     "id": "local-cd6d6b2478e9",
     "name": "iio",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/iio/iio.model.json",
     "preview": "legacy/previews/local-cd6d6b2478e9.png"
@@ -2038,6 +2111,7 @@
     "id": "local-6c40291d8613",
     "name": "izumi",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/izumi/izumi.model.json",
     "preview": "legacy/previews/local-6c40291d8613.png"
@@ -2054,6 +2128,7 @@
     "id": "local-6a05cefd0079",
     "name": "kanzaki",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/kanzaki/kanzaki.model.json",
     "preview": "legacy/previews/local-6a05cefd0079.png"
@@ -2062,6 +2137,7 @@
     "id": "local-44bc1d178117",
     "name": "katou_01",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/katou_01/katou_01.model.json",
     "preview": "legacy/previews/local-44bc1d178117.png"
@@ -2078,6 +2154,7 @@
     "id": "local-760cc8bb9017",
     "name": "kuroko",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/kuroko/kuroko.model.json",
     "preview": "legacy/previews/local-760cc8bb9017.png"
@@ -2094,6 +2171,7 @@
     "id": "local-800f99e79437",
     "name": "len",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/len/len.model.json",
     "preview": "legacy/previews/local-800f99e79437.png"
@@ -2102,6 +2180,7 @@
     "id": "local-90e3f35f12cc",
     "name": "len_impact",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/len_impact/len_impact.model.json",
     "preview": "legacy/previews/local-90e3f35f12cc.png"
@@ -2110,6 +2189,7 @@
     "id": "local-a167546ec815",
     "name": "len_space",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/len_space/len_space.model.json",
     "preview": "legacy/previews/local-a167546ec815.png"
@@ -2118,6 +2198,7 @@
     "id": "local-b86c56f28377",
     "name": "len_swim",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/len_swim/len_swim.model.json",
     "preview": "legacy/previews/local-b86c56f28377.png"
@@ -2126,6 +2207,7 @@
     "id": "local-fcce62f77537",
     "name": "liang · 2",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/liang/2.json",
     "preview": "legacy/previews/local-fcce62f77537.png"
@@ -2158,6 +2240,7 @@
     "id": "local-c41f5fb0780b",
     "name": "mashiro · ryoufuku",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/mashiro/ryoufuku.model.json",
     "preview": "legacy/previews/local-c41f5fb0780b.png"
@@ -2166,6 +2249,7 @@
     "id": "local-86ec0535a562",
     "name": "mashiro · seifuku",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/mashiro/seifuku.model.json",
     "preview": "legacy/previews/local-86ec0535a562.png"
@@ -2190,6 +2274,7 @@
     "id": "local-19b5ddd5c820",
     "name": "mikoto",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/mikoto/mikoto.model.json",
     "preview": "legacy/previews/local-19b5ddd5c820.png"
@@ -2206,6 +2291,7 @@
     "id": "local-6b1abdd188d6",
     "name": "murakumo",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/murakumo/index.json",
     "preview": "legacy/previews/local-6b1abdd188d6.png"
@@ -2278,6 +2364,7 @@
     "id": "local-e6faee639904",
     "name": "saten",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/saten/saten.model.json",
     "preview": "legacy/previews/local-e6faee639904.png"
@@ -2334,6 +2421,7 @@
     "id": "local-2330203aee3c",
     "name": "stl",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/stl/stl.model.json",
     "preview": "legacy/previews/local-2330203aee3c.png"
@@ -2422,6 +2510,7 @@
     "id": "local-90fde350200d",
     "name": "z16",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/model/z16/z16.model.json",
     "preview": "legacy/previews/local-90fde350200d.png"
@@ -2430,6 +2519,7 @@
     "id": "l2d-models-615c42add339-8d28c0b35f25",
     "name": "chino",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/l2d-models-615c42add339/models/chino/model.json",
     "preview": "legacy/previews/l2d-models-615c42add339-8d28c0b35f25.png"
@@ -2479,6 +2569,7 @@
     "id": "l2d-models-615c42add339-3438cd1bb6be",
     "name": "Pio",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/l2d-models-615c42add339/models/Pio/model.json",
     "preview": "legacy/previews/l2d-models-615c42add339-3438cd1bb6be.png"
@@ -2487,6 +2578,7 @@
     "id": "l2d-models-615c42add339-210d5415ece4",
     "name": "potion-Maker-Pio",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/l2d-models-615c42add339/models/potion-Maker-Pio/index.json",
     "preview": "legacy/previews/l2d-models-615c42add339-210d5415ece4.png"
@@ -2527,6 +2619,7 @@
     "id": "l2d-models-615c42add339-56492dfd0219",
     "name": "xisitina",
     "family": "收藏角色",
+    "supportsViewModes": false,
     "generation": 2,
     "manifest": "legacy/l2d-models-615c42add339/models/xisitina/model.json",
     "preview": "legacy/previews/l2d-models-615c42add339-56492dfd0219.png"

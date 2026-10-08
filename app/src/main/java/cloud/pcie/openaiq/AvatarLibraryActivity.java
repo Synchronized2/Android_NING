@@ -45,6 +45,7 @@ public final class AvatarLibraryActivity extends Activity {
     private Button useButton;
     private Button viewToggle;
     private Button portraitButton;
+    private View viewModeGroup;
     private EditText searchInput;
 
     @Override
@@ -65,6 +66,7 @@ public final class AvatarLibraryActivity extends Activity {
         useButton = findViewById(R.id.useAvatarButton);
         viewToggle = findViewById(R.id.libraryViewToggleButton);
         portraitButton = findViewById(R.id.libraryPortraitButton);
+        viewModeGroup = findViewById(R.id.libraryViewModeGroup);
         searchInput = findViewById(R.id.avatarSearchInput);
         ListView list = findViewById(R.id.avatarList);
         Spinner familySpinner = findViewById(R.id.avatarFamilySpinner);
@@ -177,13 +179,13 @@ public final class AvatarLibraryActivity extends Activity {
         previewStatus.setText(getString(ready ? R.string.avatar_preview_ready
                 : R.string.avatar_preview_loading, avatar.name));
         useButton.setEnabled(ready && !avatar.id.equals(selectedId));
-        setViewModesEnabled(ready);
+        setViewModesEnabled(ready && avatar.supportsViewModes);
         updateSelectionActions();
         adapter.notifyDataSetChanged();
         if (changed || !preview.isReadyForModel(avatar.id)) {
             preview.setModel(avatar.id);
         }
-        preview.setViewMode(fullBody);
+        preview.setViewMode(avatar.supportsViewModes ? fullBody : true);
     }
 
     private void useFocusedAvatar() {
@@ -217,6 +219,8 @@ public final class AvatarLibraryActivity extends Activity {
     }
 
     private void setFullBody(boolean value) {
+        AvatarCatalog.Avatar focused = focusedAvatar();
+        if (focused == null || !focused.supportsViewModes) return;
         if (fullBody == value) return;
         fullBody = value;
         AppSettings.saveAvatarFullBody(this, fullBody);
@@ -225,6 +229,9 @@ public final class AvatarLibraryActivity extends Activity {
     }
 
     private void setViewModesEnabled(boolean enabled) {
+        AvatarCatalog.Avatar focused = focusedAvatar();
+        boolean supported = focused != null && focused.supportsViewModes;
+        viewModeGroup.setVisibility(supported ? View.VISIBLE : View.GONE);
         viewToggle.setEnabled(enabled);
         portraitButton.setEnabled(enabled);
         viewToggle.setAlpha(enabled ? 1f : .45f);

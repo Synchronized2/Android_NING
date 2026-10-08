@@ -48,6 +48,14 @@
     <string name="close">关闭</string>
     <string name="image_saved">图片已保存</string>
     <string name="image_save_failed">保存失败：%1$s</string>
+    <string name="image_job_channel">生图任务</string>
+    <string name="image_job_running">正在生成图片（第 %1$d/3 次）</string>
+    <string name="image_job_retrying">生图失败，准备第 %1$d/3 次尝试</string>
+    <string name="image_job_complete">图片生成完成</string>
+    <string name="image_job_failed">图片生成失败</string>
+    <string name="image_job_stopped">生图任务已停止</string>
+    <string name="stop_image_job">停止生图</string>
+    <string name="notification_permission_denied">未开启通知权限；生图仍会在后台继续，完成时将使用振动提醒。</string>
     <string name="welcome">输入内容后，选择对话或生图。</string>
     <string name="live2d_avatar">Live2D 互动形象</string>
     <string name="avatar_loading">Hiyori · 正在加载</string>

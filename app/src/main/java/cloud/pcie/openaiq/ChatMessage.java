@@ -3,12 +3,15 @@ package cloud.pcie.openaiq;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.UUID;
+
 final class ChatMessage {
     static final String ROLE_USER = "user";
     static final String ROLE_ASSISTANT = "assistant";
     static final String MODE_CHAT = "chat";
     static final String MODE_IMAGE = "image";
 
+    final String id;
     final String role;
     String content;
     boolean error;
@@ -24,12 +27,18 @@ final class ChatMessage {
     boolean retryable;
 
     ChatMessage(String role, String content) {
+        this(UUID.randomUUID().toString(), role, content);
+    }
+
+    private ChatMessage(String id, String role, String content) {
+        this.id = id == null || id.trim().isEmpty() ? UUID.randomUUID().toString() : id;
         this.role = role;
         this.content = content;
     }
 
     JSONObject toJson() throws JSONException {
         return new JSONObject()
+                .put("id", id)
                 .put("role", role)
                 .put("content", content)
                 .put("error", error)
@@ -47,6 +56,7 @@ final class ChatMessage {
 
     static ChatMessage fromJson(JSONObject json) {
         ChatMessage message = new ChatMessage(
+                json.optString("id", ""),
                 json.optString("role", ROLE_ASSISTANT),
                 json.optString("content", ""));
         message.error = json.optBoolean("error", false);

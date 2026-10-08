@@ -4,7 +4,10 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -13,6 +16,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -55,6 +59,7 @@ public final class MainActivity extends Activity {
     private static final int REQUEST_HISTORY = 43;
     private static final int REQUEST_RECORD_AUDIO = 44;
     private static final int REQUEST_LOCATION = 45;
+    private static final int REQUEST_NOTIFICATIONS = 46;
     private static final long MAX_IMAGE_BYTES = 10L * 1024L * 1024L;
     private static final long LOCATION_CACHE_MAX_AGE_MS = 30L * 60L * 1000L;
     private static final long LOCATION_TIMEOUT_MS = 12_000L;
@@ -63,6 +68,12 @@ public final class MainActivity extends Activity {
     private final ArrayList<ChatMessage> messages = new ArrayList<>();
     private final ArrayList<OpenAiClient.ToolCall> pendingToolCalls = new ArrayList<>();
     private final ExecutorService networkExecutor = Executors.newSingleThreadExecutor();
+    private final android.os.Handler streamUiHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    private boolean streamRefreshPending;
+    private final Runnable streamRefresh = () -> {
+        streamRefreshPending = false;
+        refreshMessages();
+    };
     private final ExecutorService fileExecutor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private OpenAiClient client;
@@ -116,6 +127,7 @@ public final class MainActivity extends Activity {
     private Button conversationViewButton;
     private ImageWorkbenchView imageWorkbench;
     private boolean avatarFullBody;
+    private boolean activeAvatarSupportsViewModes = true;
     private String pendingDownloadUri = "";
     private String pendingDownloadMime = "image/png";
     private String pendingDownloadName = "ning-image.png";
@@ -134,6 +146,13 @@ public final class MainActivity extends Activity {
     private Location fallbackLocation;
     private int pendingLocationWeatherDays = 3;
     private int pendingLocationWeatherGeneration = -1;
+    private boolean imageJobReceiverRegistered;
+    private final BroadcastReceiver imageJobReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            handleImageJobEvent(intent);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,7 +198,7 @@ public final class MainActivity extends Activity {
                 updateModeViews();
                 if (state == SpeechController.State.PREPARING) {
                     live2dAvatar.setSpeaking(false);
-                    setAvatarState("answering", R.string.avatar_answering);
+                    updateAvatarState();
                     statusText.setText(attempt == 1
                             ? getString(R.string.speech_preparing)
                             : getString(R.string.speech_retrying, attempt));
@@ -299,7 +318,8 @@ public final class MainActivity extends Activity {
         });
         messageList.setAdapter(adapter);
 
-        restoreState(savedInstanceState);
+        boolean openedImageConversation = selectConversationFromNotification(getIntent());
+        restoreState(openedImageConversation ? null : savedInstanceState);
         imageWorkbench.restoreState(savedInstanceState);
         interactiveTextInput = savedInstanceState != null && savedInstanceState.getBoolean("chat_list_view");
         imageWorkbench.updateGallery(conversationStore.generatedImages());
@@ -334,23 +354,37 @@ public final class MainActivity extends Activity {
         });
         findViewById(R.id.historyButton).setOnClickListener(view -> {
             voiceController.cancel();
-            stopGeneration();
-            saveConversation();
+            saveConversationSafely();
             startActivityForResult(new Intent(this, HistoryActivity.class), REQUEST_HISTORY);
         });
         findViewById(R.id.newConversationButton).setOnClickListener(view -> startNewConversation());
         findViewById(R.id.titleSettingsButton).setOnClickListener(view -> {
             voiceController.cancel();
-            stopGeneration();
             startActivity(new Intent(this, SettingsActivity.class));
         });
 
         AppSettings settings = AppSettings.load(this);
-        setSelectedMode(savedInstanceState == null ? ChatMessage.MODE_CHAT
+        boolean openImageWorkspace = getIntent().getBooleanExtra("open_image_workspace", false);
+        setSelectedMode(openImageWorkspace ? ChatMessage.MODE_IMAGE
+                : savedInstanceState == null ? ChatMessage.MODE_CHAT
                 : savedInstanceState.getString("selected_workspace", ChatMessage.MODE_CHAT));
         if (!settings.isConfigured() && savedInstanceState == null) {
             startActivity(new Intent(this, SettingsActivity.class));
         }
+    }
+
+    @Override
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter(ImageGenerationService.ACTION_EVENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(imageJobReceiver, filter, RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(imageJobReceiver, filter);
+        }
+        imageJobReceiverRegistered = true;
+        syncImageJobState(true);
     }
 
     @Override
@@ -393,14 +427,32 @@ public final class MainActivity extends Activity {
 
     @Override
     protected void onStop() {
+        if (imageJobReceiverRegistered) {
+            unregisterReceiver(imageJobReceiver);
+            imageJobReceiverRegistered = false;
+        }
         voiceController.cancel();
         speechController.stop();
-        conversationStore.save(messages);
+        saveConversationSafely();
         super.onStop();
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        if (intent.getBooleanExtra("open_image_workspace", false)) {
+            if (selectConversationFromNotification(intent)) {
+                loadActiveConversation();
+            }
+            setSelectedMode(ChatMessage.MODE_IMAGE);
+            syncImageJobState(true);
+        }
+    }
+
+    @Override
     protected void onDestroy() {
+        streamUiHandler.removeCallbacksAndMessages(null);
         cancelLocationLookup();
         if (activeHandle != null) {
             activeHandle.cancel();
@@ -433,6 +485,16 @@ public final class MainActivity extends Activity {
             } else if (busy && generation == requestGeneration) {
                 failWeatherRequest(
                         "未获得定位权限。请允许近似位置权限，或直接告诉我要查询的城市。");
+            }
+            return;
+        }
+        if (requestCode == REQUEST_NOTIFICATIONS) {
+            if (grantResults.length == 0
+                    || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(
+                        this,
+                        R.string.notification_permission_denied,
+                        Toast.LENGTH_LONG).show();
             }
             return;
         }
@@ -559,6 +621,7 @@ public final class MainActivity extends Activity {
     }
 
     private void toggleAvatarViewMode() {
+        if (!activeAvatarSupportsViewModes) return;
         avatarFullBody = !avatarFullBody;
         AppSettings.saveAvatarFullBody(this, avatarFullBody);
         live2dAvatar.setViewMode(avatarFullBody);
@@ -566,6 +629,9 @@ public final class MainActivity extends Activity {
     }
 
     private void updateAvatarViewIcon() {
+        viewToggleButton.setVisibility(activeAvatarSupportsViewModes
+                ? View.VISIBLE : View.GONE);
+        if (!activeAvatarSupportsViewModes) return;
         viewToggleButton.setImageResource(avatarFullBody
                 ? R.drawable.ic_avatar_portrait
                 : R.drawable.ic_avatar_full);
@@ -635,6 +701,7 @@ public final class MainActivity extends Activity {
         avatarEnabled = settings.avatarEnabled;
         updateModeViews();
         AvatarCatalog.Avatar avatar = AvatarCatalog.find(this, settings.avatarId);
+        activeAvatarSupportsViewModes = avatar == null || avatar.supportsViewModes;
         avatarDisplayName = avatar == null ? settings.avatarId : avatar.name;
         updateAvatarDialog();
         if (!avatarEnabled) {
@@ -650,7 +717,7 @@ public final class MainActivity extends Activity {
         } else {
             updateAvatarState();
         }
-        live2dAvatar.setViewMode(avatarFullBody);
+        live2dAvatar.setViewMode(activeAvatarSupportsViewModes ? avatarFullBody : true);
         updateAvatarViewIcon();
     }
 
@@ -663,7 +730,9 @@ public final class MainActivity extends Activity {
             setAvatarState("answering", R.string.avatar_speaking);
         } else if (speechState == SpeechController.State.PREPARING) {
             live2dAvatar.setSpeaking(false);
-            setAvatarState("answering", R.string.avatar_answering);
+            boolean waitingForReply = busy && activeMessage != null && activeMessage.content.trim().isEmpty();
+            setAvatarState(waitingForReply ? "thinking" : "answering",
+                    waitingForReply ? R.string.avatar_thinking : R.string.avatar_answering);
         } else if (busy) {
             boolean answering = activeMessage != null && !activeMessage.content.trim().isEmpty();
             setAvatarState(answering ? "answering" : "thinking",
@@ -736,6 +805,10 @@ public final class MainActivity extends Activity {
 
     private void sendImageMessage() {
         if (busy) return;
+        if (ImageGenerationService.snapshot(this).running) {
+            Toast.makeText(this, "已有生图任务正在后台运行", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String description = imageWorkbench.description();
         if (description.isEmpty()) {
             Toast.makeText(this, "请输入生图描述", Toast.LENGTH_SHORT).show();
@@ -807,7 +880,7 @@ public final class MainActivity extends Activity {
                     if (firstDelta) {
                         updateAvatarState();
                     }
-                    refreshMessages();
+                    scheduleStreamRefresh();
                 });
             }
 
@@ -917,51 +990,108 @@ public final class MainActivity extends Activity {
         activeMessage.imageMime = "";
         activeMessage.imageName = "";
         activeMessage.meta = "";
+        saveConversation();
+        String conversationId = conversationStore.activeConversationId();
+        if (conversationId.isEmpty()) {
+            activeMessage.content = "生图失败：无法创建任务会话。";
+            activeMessage.error = true;
+            activeMessage.retryable = true;
+            finishRequest();
+            return;
+        }
         setBusy(true);
         refreshMessages();
         if (announceInAvatar) {
             speechController.speak(activeMessage, settings);
         }
 
-        int generation = ++requestGeneration;
+        ++requestGeneration;
         requestStartedAtMs = SystemClock.elapsedRealtime();
-        activeHandle = client.generateImage(
-                networkExecutor,
-                settings,
-                prompt,
-                referenceImage,
-                new ImageGenerationOptions(responseMessage.imageSize, responseMessage.imageQuality),
-                new OpenAiClient.ImageListener() {
-                    @Override
-                    public void onSuccess(OpenAiClient.ImageResult image) {
-                        runOnUiThread(() -> {
-                            if (!busy || generation != requestGeneration || activeMessage == null) {
-                                return;
-                            }
-                            activeMessage.content = "图片已生成";
-                            activeMessage.imageUri = image.uri;
-                            activeMessage.imageMime = image.mime;
-                            activeMessage.imageName = image.name;
-                            activeMessage.generatedImage = true;
-                            activeMessage.meta = formatModelDuration(elapsedRequestMs());
-                            finishRequest();
-                        });
-                    }
+        requestNotificationPermission();
+        try {
+            ImageGenerationService.start(
+                    this,
+                    conversationId,
+                    responseMessage,
+                    referenceImage);
+        } catch (RuntimeException exception) {
+            activeMessage.content = "生图任务启动失败：" + exception.getMessage();
+            activeMessage.error = true;
+            activeMessage.retryable = true;
+            finishRequest();
+        }
+    }
 
-                    @Override
-                    public void onError(String message) {
-                        runOnUiThread(() -> {
-                            if (!busy || generation != requestGeneration || activeMessage == null) {
-                                return;
-                            }
-                            activeMessage.content = "生图失败：" + message;
-                            activeMessage.error = true;
-                            activeMessage.retryable = true;
-                            activeMessage.meta = formatModelDuration(elapsedRequestMs());
-                            finishRequest();
-                        });
-                    }
-                });
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                    REQUEST_NOTIFICATIONS);
+        }
+    }
+
+    private void handleImageJobEvent(Intent intent) {
+        if (intent == null) return;
+        String conversationId = intent.getStringExtra(ImageGenerationService.EXTRA_CONVERSATION_ID);
+        String responseId = intent.getStringExtra(ImageGenerationService.EXTRA_RESPONSE_ID);
+        String state = intent.getStringExtra(ImageGenerationService.EXTRA_STATE);
+        if (!conversationStore.isActiveConversation(conversationId)) {
+            return;
+        }
+        replaceMessageFromStore(conversationId, responseId);
+        if (ImageGenerationService.STATE_RUNNING.equals(state)
+                || ImageGenerationService.STATE_RETRYING.equals(state)) {
+            ChatMessage message = findMessage(responseId);
+            activeMessage = message;
+            activeMode = ChatMessage.MODE_IMAGE;
+            setBusy(true);
+        } else {
+            activeMessage = null;
+            activeMode = ChatMessage.MODE_CHAT;
+            setBusy(false);
+        }
+        refreshMessages();
+    }
+
+    private void syncImageJobState(boolean reloadConversation) {
+        if (conversationStore == null || messages == null) return;
+        ImageGenerationService.Snapshot job = ImageGenerationService.snapshot(this);
+        String activeConversationId = conversationStore.activeConversationId();
+        if (reloadConversation && !activeConversationId.isEmpty()) {
+            messages.clear();
+            messages.addAll(conversationStore.load());
+        }
+        if (job.running && activeConversationId.equals(job.conversationId)) {
+            activeMessage = findMessage(job.responseId);
+            activeMode = ChatMessage.MODE_IMAGE;
+            setBusy(true);
+        } else if (ChatMessage.MODE_IMAGE.equals(activeMode)) {
+            activeMessage = null;
+            activeMode = ChatMessage.MODE_CHAT;
+            setBusy(false);
+        }
+        refreshMessages(false);
+    }
+
+    private ChatMessage findMessage(String messageId) {
+        if (messageId == null) return null;
+        for (ChatMessage message : messages) {
+            if (messageId.equals(message.id)) return message;
+        }
+        return null;
+    }
+
+    private void replaceMessageFromStore(String conversationId, String responseId) {
+        ChatMessage updated = conversationStore.findMessage(conversationId, responseId);
+        if (updated == null) return;
+        for (int index = 0; index < messages.size(); index++) {
+            if (responseId.equals(messages.get(index).id)) {
+                messages.set(index, updated);
+                return;
+            }
+        }
     }
 
     private OpenAiClient.ToolCall findImageToolCall() {
@@ -1241,6 +1371,10 @@ public final class MainActivity extends Activity {
         if (!busy) {
             return;
         }
+        if (ChatMessage.MODE_IMAGE.equals(activeMode)) {
+            ImageGenerationService.cancel(this);
+            return;
+        }
         requestGeneration++;
         cancelLocationLookup();
         pendingLocationWeatherGeneration = -1;
@@ -1291,6 +1425,10 @@ public final class MainActivity extends Activity {
         if (messages.isEmpty()) {
             return;
         }
+        if (ImageGenerationService.snapshot(this).running) {
+            Toast.makeText(this, R.string.stop_before_delete, Toast.LENGTH_SHORT).show();
+            return;
+        }
         new AlertDialog.Builder(this)
                 .setTitle(R.string.clear_chat)
                 .setMessage(R.string.confirm_clear_chat)
@@ -1309,7 +1447,8 @@ public final class MainActivity extends Activity {
 
     private void startNewConversation() {
         voiceController.cancel();
-        stopGeneration();
+        boolean backgroundImageJob = ImageGenerationService.snapshot(this).running;
+        if (busy && !ChatMessage.MODE_IMAGE.equals(activeMode)) stopGeneration();
         speechController.stop();
         showAvatarWelcomeOnLaunch = true;
         imageWorkbench.clearDraft();
@@ -1319,19 +1458,24 @@ public final class MainActivity extends Activity {
             updateNodeStatus();
             return;
         }
-        saveConversation();
+        saveConversationSafely();
         conversationStore.createConversation();
         messages.clear();
         messageInput.setText("");
         clearPendingImage();
         adapter.notifyDataSetChanged();
+        if (backgroundImageJob) {
+            activeMessage = null;
+            activeMode = ChatMessage.MODE_CHAT;
+            setBusy(false);
+        }
         updateModeViews();
         updateNodeStatus();
     }
 
     private void loadActiveConversation() {
         voiceController.cancel();
-        stopGeneration();
+        if (busy && !ChatMessage.MODE_IMAGE.equals(activeMode)) stopGeneration();
         speechController.stop();
         showAvatarWelcomeOnLaunch = false;
         messages.clear();
@@ -1369,6 +1513,7 @@ public final class MainActivity extends Activity {
             statusText.setText("");
         }
         updateModeViews();
+        updateAvatarState();
     }
 
     private void setSelectedMode(String mode) {
@@ -1437,6 +1582,7 @@ public final class MainActivity extends Activity {
     }
 
     private void updateWorkbenchStatus() {
+        if (imageWorkbench.getVisibility() != View.VISIBLE) return;
         ChatMessage latest = null;
         for (int i = messages.size() - 1; i >= 0; i--) {
             ChatMessage candidate = messages.get(i);
@@ -1609,20 +1755,21 @@ public final class MainActivity extends Activity {
         }
         avatarDialog.setVisibility(View.VISIBLE);
         if (speechDisplayMessage != null && !speechDisplayText.isEmpty()) {
-            avatarDialogRole.setText(avatarDisplayName);
-            avatarDialogText.setText(speechDisplayText);
+            setAvatarDialogText(avatarDisplayName, speechDisplayText);
         } else if (speechController.isStreaming(activeMessage)
                 || (latest != null && speechController.isStreaming(latest))) {
-            avatarDialogRole.setText(avatarDisplayName);
-            avatarDialogText.setText("正在思考…");
+            setAvatarDialogText(avatarDisplayName, "正在思考…");
         } else if (showAvatarWelcomeOnLaunch || latest == null) {
-            avatarDialogRole.setText(avatarDisplayName);
-            avatarDialogText.setText(R.string.avatar_welcome_message);
+            setAvatarDialogText(avatarDisplayName, getString(R.string.avatar_welcome_message));
         } else {
-            avatarDialogRole.setText(ChatMessage.ROLE_USER.equals(latest.role)
-                    ? "你" : avatarDisplayName);
-            avatarDialogText.setText(latest.content);
+            setAvatarDialogText(ChatMessage.ROLE_USER.equals(latest.role)
+                    ? "你" : avatarDisplayName, latest.content);
         }
+    }
+
+    private void setAvatarDialogText(String role, String text) {
+        if (!android.text.TextUtils.equals(avatarDialogRole.getText(), role)) avatarDialogRole.setText(role);
+        if (!android.text.TextUtils.equals(avatarDialogText.getText(), text)) avatarDialogText.setText(text);
     }
 
     private void appendToolResults(ChatMessage message, String userText) {
@@ -1678,7 +1825,16 @@ public final class MainActivity extends Activity {
         refreshMessages(true);
     }
 
+    private void scheduleStreamRefresh() {
+        if (streamRefreshPending) return;
+        streamRefreshPending = true;
+        streamUiHandler.postDelayed(streamRefresh, 80L);
+    }
+
     private void refreshMessages(boolean scrollToBottom) {
+        // Completion, cancellation and retries refresh immediately and cancel stale work.
+        streamUiHandler.removeCallbacks(streamRefresh);
+        streamRefreshPending = false;
         adapter.notifyDataSetChanged();
         updateAvatarDialog();
         updateWorkbenchStatus();
@@ -1775,7 +1931,8 @@ public final class MainActivity extends Activity {
         for (ChatMessage message : messages) {
             if (ChatMessage.ROLE_ASSISTANT.equals(message.role)
                     && message.content.trim().isEmpty()
-                    && !message.hasGeneratedImage()) {
+                    && !message.hasGeneratedImage()
+                    && !ImageGenerationService.isPendingResponse(this, message.id)) {
                 message.content = getString(R.string.previous_request_interrupted);
                 message.error = true;
                 message.retryable = true;
@@ -1846,6 +2003,33 @@ public final class MainActivity extends Activity {
     private void saveConversation() {
         conversationStore.save(messages);
         if (imageWorkbench != null) imageWorkbench.updateGallery(conversationStore.generatedImages());
+    }
+
+    private void saveConversationSafely() {
+        ImageGenerationService.Snapshot job = ImageGenerationService.snapshot(this);
+        boolean targetsActiveConversation = job.responseId != null
+                && !job.responseId.isEmpty()
+                && conversationStore.isActiveConversation(job.conversationId);
+        if (targetsActiveConversation) {
+            replaceMessageFromStore(job.conversationId, job.responseId);
+            if (job.running) {
+                if (imageWorkbench != null) {
+                    imageWorkbench.updateGallery(conversationStore.generatedImages());
+                }
+                return;
+            }
+        }
+        saveConversation();
+    }
+
+    private boolean selectConversationFromNotification(Intent intent) {
+        if (intent == null || !intent.getBooleanExtra("open_image_workspace", false)) {
+            return false;
+        }
+        String conversationId = intent.getStringExtra(ImageGenerationService.EXTRA_CONVERSATION_ID);
+        return conversationId != null
+                && !conversationId.isEmpty()
+                && conversationStore.selectConversation(conversationId);
     }
 
     private void hideKeyboard() {

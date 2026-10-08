@@ -20,6 +20,7 @@
   let moc;
   let textures = [];
   let parameterIndex = new Map();
+  let parameterAliases = {};
   let transform = [1, 1, 0, 0];
   let program;
   let locations;
@@ -32,6 +33,8 @@
   let legacyApp;
   let legacyAvatar;
   let legacyFramingExclusions = new Set();
+  let legacyAspectX = 1;
+  let animationFrames = 0;
 
   const vertexShader = `
     attribute vec2 aPosition;
@@ -336,7 +339,7 @@
     const portrait = state.viewMode !== "full";
     const bounds = legacyGeometryBounds();
     if (!bounds) return;
-    const boundsWidth = Math.max(1, bounds.maxX - bounds.minX);
+    const boundsWidth = Math.max(1, bounds.maxX - bounds.minX) * legacyAspectX;
     const boundsHeight = Math.max(1, bounds.maxY - bounds.minY);
     const wideModel = boundsWidth / boundsHeight > 0.65;
     const fullBodyFill = wideModel ? 0.68 : 0.84;
@@ -347,9 +350,9 @@
       fitHeight * fullBodyFill / boundsHeight);
     const scale = portrait ? fullScale * 1.5 : fullScale;
     legacyAvatar.anchor.set(0, 0);
-    legacyAvatar.scale.set(scale, scale);
+    legacyAvatar.scale.set(scale * legacyAspectX, scale);
     legacyAvatar.position.x = width * 0.5
-      - (bounds.minX + bounds.maxX) * 0.5 * scale;
+      - (bounds.minX + bounds.maxX) * 0.5 * scale * legacyAspectX;
     legacyAvatar.position.y = portrait
       ? height * 0.04 - bounds.minY * scale
       : fullBodyHeight * 0.5 - (bounds.minY + bounds.maxY) * 0.5 * scale;
@@ -358,6 +361,7 @@
   async function initializeLegacy(selected) {
     legacyModel = true;
     legacyFramingExclusions = new Set(selected.framingExcludedDrawables || []);
+    legacyAspectX = Number(selected.legacyAspectX) || 1;
     if (!window.PIXI || !window.PIXI.live2d) {
       throw new Error("Cubism 2 Pixi 运行库不可用");
     }
@@ -376,6 +380,7 @@
     });
     legacyApp.stage.addChild(legacyAvatar);
     legacyAvatar.internalModel.on("beforeModelUpdate", () => {
+      animationFrames++;
       const core = legacyAvatar.internalModel.coreModel;
       const set = (id, value) => {
         const index = core.getParamIndex(id);
@@ -404,7 +409,11 @@
   }
 
   function setParameter(id, value, weight) {
-    const index = parameterIndex.get(id);
+    // Some Cubism 3 exports retain the Cubism 2 parameter naming convention.
+    const legacyId = id.replace(/([A-Z])([A-Z][a-z])/g, "$1_$2")
+      .replace(/([a-z])([A-Z])/g, "$1_$2").toUpperCase();
+    const mappedId = parameterAliases[id] || id;
+    const index = parameterIndex.has(mappedId) ? parameterIndex.get(mappedId) : parameterIndex.get(legacyId);
     if (index === undefined) return;
     const parameters = model.parameters;
     const blend = weight === undefined ? 1 : weight;
@@ -528,6 +537,7 @@
       }
       gl.disable(gl.STENCIL_TEST);
       drawables.resetDynamicFlags();
+      animationFrames++;
     }
     requestAnimationFrame(frame);
   }
@@ -537,6 +547,7 @@
     const selectedId = new URLSearchParams(location.search).get("model") || "hiyori";
     const selected = catalog.find(item => item.id === selectedId) || catalog[0];
     if (!selected) throw new Error("内置人物目录为空");
+    parameterAliases = selected.parameterAliases || {};
     if (selected.generation === 2) {
       await initializeLegacy(selected);
       return;
@@ -603,17 +614,19 @@
     diagnostics() {
       if (legacyAvatar) {
         const m = legacyAvatar.internalModel;
-        return { bounds: legacyGeometryBounds(), width: m.originalWidth, height:m.originalHeight,
+        return { phase:state.phase, animationFrames, bounds: legacyGeometryBounds(), width: m.originalWidth, height:m.originalHeight,
           local:[m.localTransform.a,m.localTransform.d,m.localTransform.tx,m.localTransform.ty],
           position:[legacyAvatar.x,legacyAvatar.y], scale:legacyAvatar.scale.x,
           viewport:[canvas.clientWidth,canvas.clientHeight] };
       }
-      return { bounds: model ? visibleBounds() : null, transform, viewport:[canvas.clientWidth,canvas.clientHeight] };
+      return { phase:state.phase, animationFrames, bounds: model ? visibleBounds() : null, transform, viewport:[canvas.clientWidth,canvas.clientHeight] };
     },
     setState(value) { state.phase = String(value || "idle"); },
     setSpeaking(value) { state.speaking = Boolean(value); },
     setViewMode(value) {
-      state.viewMode = value === "full" ? "full" : "portrait";
+      const next = value === "full" ? "full" : "portrait";
+      if (state.viewMode === next) return;
+      state.viewMode = next;
       if (legacyModel) {
         fitLegacyAvatar();
         setTimeout(fitLegacyAvatar, 300);

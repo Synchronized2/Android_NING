@@ -117,18 +117,23 @@ public final class Live2DAvatarView extends WebView {
     }
 
     void setAvatarState(String state) {
-        pendingState = state == null || state.isEmpty() ? "idle" : state;
-        applyState();
+        String next = state == null || state.isEmpty() ? "idle" : state;
+        if (next.equals(pendingState)) return;
+        pendingState = next;
+        applyAnimationState();
     }
 
     void setSpeaking(boolean speaking) {
+        if (pendingSpeaking == speaking) return;
         pendingSpeaking = speaking;
-        applyState();
+        applyAnimationState();
     }
 
     void setViewMode(boolean fullBody) {
-        pendingViewMode = fullBody ? "full" : "portrait";
-        applyState();
+        String next = fullBody ? "full" : "portrait";
+        if (next.equals(pendingViewMode)) return;
+        pendingViewMode = next;
+        applyViewMode();
     }
 
     void triggerGesture() {
@@ -137,12 +142,20 @@ public final class Live2DAvatarView extends WebView {
     }
 
     private void applyState() {
+        applyAnimationState();
+        applyViewMode();
+    }
+
+    private void applyAnimationState() {
         String escapedState = pendingState.replace("\\", "\\\\").replace("'", "\\'");
         evaluate("window.avatar&&typeof window.avatar.setState==='function'"
                 + "&&window.avatar.setState('" + escapedState + "');"
                 + "window.avatar&&typeof window.avatar.setSpeaking==='function'"
-                + "&&window.avatar.setSpeaking(" + pendingSpeaking + ");"
-                + "window.avatar&&typeof window.avatar.setViewMode==='function'"
+                + "&&window.avatar.setSpeaking(" + pendingSpeaking + ");");
+    }
+
+    private void applyViewMode() {
+        evaluate("window.avatar&&typeof window.avatar.setViewMode==='function'"
                 + "&&window.avatar.setViewMode('" + pendingViewMode + "');");
     }
 
