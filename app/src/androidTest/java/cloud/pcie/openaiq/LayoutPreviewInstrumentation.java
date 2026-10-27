@@ -33,6 +33,12 @@ public final class LayoutPreviewInstrumentation extends Instrumentation {
         Bundle result = new Bundle();
         Activity activity = null;
         try {
+            if (auditArguments != null && "true".equals(auditArguments.getString("ttsOnly"))) {
+                new EdgeTtsAudit(this).run();
+                result.putString("result", "PASS: Edge TTS synthesis, decoding, segmented playback and settings exit");
+                finish(Activity.RESULT_OK, result);
+                return;
+            }
             if (auditArguments != null && "true".equals(auditArguments.getString("animationOnly"))) {
                 new AvatarAnimationAudit(this).run();
                 result.putString("result", "PASS: animation continues across thinking/answering; no state-triggered refits");

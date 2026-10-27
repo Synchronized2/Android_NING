@@ -1,0 +1,12 @@
+NING includes a Java adaptation of the Edge TTS v2 token algorithm from:
+https://github.com/rany2/edge-tts/blob/master/src/edge_tts/drm.py
+Copyright (c) 2025- rany <rany@riseup.net>
+Licensed under GNU Lesser General Public License version 3 (LGPL-3.0-only).
+
+Modified component: cloud.pcie.openaiq.EdgeTtsGec (Java adaptation by NING contributors).
+The corresponding source is in app/src/main/java/cloud/pcie/openaiq/EdgeTtsGec.java.
+The source, tests and Gradle build files in this project allow rebuilding the
+application with a modified version of this component. Reverse engineering for
+debugging modifications to this LGPL component is permitted.
+
+License texts: LGPL-3.0.txt and GPL-3.0.txt in this directory.

@@ -3,6 +3,7 @@ package cloud.pcie.openaiq;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -11,7 +12,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,13 +32,12 @@ import okhttp3.WebSocketListener;
 import okio.ByteString;
 
 final class EdgeTtsClient {
+    private static final String TAG = "EdgeTtsClient";
     private static final String TOKEN = "6A5AA1D4EAFF4E9FB37E23D68491D6F4";
     private static final String VOICES_URL = "https://speech.platform.bing.com/consumer/speech/"
             + "synthesize/readaloud/voices/list?trustedclienttoken=" + TOKEN;
     private static final String SPEECH_URL = "wss://speech.platform.bing.com/consumer/speech/"
             + "synthesize/readaloud/edge/v1";
-    private static final String CHROMIUM_VERSION = "143.0.3650.75";
-    private static final String GEC_VERSION = "1-143.0.3650";
     private static final int MAX_AUDIO_BYTES = 10 * 1024 * 1024;
     private static final int MAX_TEXT_LENGTH = 12_000;
 
@@ -108,6 +107,9 @@ final class EdgeTtsClient {
 
     private final Context context;
     private final OkHttpClient httpClient;
+    private final EdgeTtsVersionProvider versionProvider;
+    private final TranslatorTtsClient translator;
+    private static volatile long clockOffsetMillis;
 
     EdgeTtsClient(Context context) {
         this.context = context.getApplicationContext();
@@ -117,6 +119,9 @@ final class EdgeTtsClient {
                 .writeTimeout(15, TimeUnit.SECONDS)
                 .callTimeout(70, TimeUnit.SECONDS)
                 .build();
+        versionProvider = new EdgeTtsVersionProvider(this.context, httpClient);
+        translator = new TranslatorTtsClient(httpClient);
+        versionProvider.refreshIfNeeded();
     }
 
     Handle listVoices(VoicesListener listener) {
@@ -197,15 +202,24 @@ final class EdgeTtsClient {
             listener.onError("没有可朗读的文本");
             return () -> { };
         }
+        if (requiresTranslator(voice)) {
+            return translator.synthesize(cleanedText, voice, styleId, rate, volume, pitch,
+                    new TranslatorTtsClient.Listener() {
+                        public File save(byte[] bytes) throws Exception { return saveAudio(bytes); }
+                        public void onSuccess(File file) { listener.onSuccess(file); }
+                        public void onError(String message) { listener.onError(message); }
+                    });
+        }
 
         String requestId = compactUuid();
         String connectionId = compactUuid();
+        EdgeTtsVersionProvider.VersionInfo edgeVersion = versionProvider.current();
         String url;
         try {
             url = SPEECH_URL
                     + "?TrustedClientToken=" + TOKEN
                     + "&Sec-MS-GEC=" + edgeGec()
-                    + "&Sec-MS-GEC-Version=" + GEC_VERSION
+                    + "&Sec-MS-GEC-Version=" + edgeVersion.gecVersion
                     + "&ConnectionId=" + connectionId;
         } catch (Exception exception) {
             listener.onError(readableError(exception));
@@ -214,11 +228,15 @@ final class EdgeTtsClient {
 
         Request request = new Request.Builder()
                 .url(url)
-                .header("User-Agent", userAgent())
+                .header("User-Agent", userAgent(edgeVersion.browserVersion))
+                .header("Origin", "chrome-extension://jdiccldimpdaibmpdkjnbmckianbfold")
+                .header("Pragma", "no-cache")
+                .header("Cache-Control", "no-cache")
                 .header("Accept-Language", "zh-CN,zh;q=0.9,en;q=0.8")
                 .header("Cookie", "MUID=" + compactUuid().toUpperCase(Locale.ROOT))
                 .build();
         AtomicBoolean settled = new AtomicBoolean(false);
+        AtomicBoolean cancelled = new AtomicBoolean(false);
         Handler timeoutHandler = new Handler(Looper.getMainLooper());
         ByteArrayOutputStream audio = new ByteArrayOutputStream();
         String finalText = cleanedText;
@@ -237,6 +255,8 @@ final class EdgeTtsClient {
             @Override
             public void onOpen(WebSocket socket, Response response) {
                 socketHolder[0] = socket;
+                Log.d(TAG, "TTS WebSocket connected with Edge "
+                        + edgeVersion.browserVersion + " / " + edgeVersion.gecVersion);
                 String timestamp = utcTimestamp();
                 String config = "{\"context\":{\"synthesis\":{\"audio\":{"
                         + "\"metadataoptions\":{\"sentenceBoundaryEnabled\":false,"
@@ -254,7 +274,7 @@ final class EdgeTtsClient {
                         + escapeXml(finalText) + "</prosody></voice></speak>";
                 socket.send("X-RequestId:" + requestId
                         + "\r\nContent-Type:application/ssml+xml"
-                        + "\r\nX-Timestamp:" + timestamp
+                        + "\r\nX-Timestamp:" + timestamp + "Z"
                         + "\r\nPath:ssml\r\n\r\n" + ssml);
             }
 
@@ -297,6 +317,7 @@ final class EdgeTtsClient {
                             listener.onError("Edge TTS 没有返回音频");
                         } else {
                             try {
+                                Log.d(TAG, "TTS audio received: " + audio.size() + " bytes");
                                 listener.onSuccess(saveAudio(audio.toByteArray()));
                             } catch (Exception exception) {
                                 listener.onError("保存语音失败：" + readableError(exception));
@@ -311,15 +332,54 @@ final class EdgeTtsClient {
             public void onFailure(WebSocket socket, Throwable throwable, Response response) {
                 if (settled.compareAndSet(false, true)) {
                     timeoutHandler.removeCallbacks(timeout);
-                    listener.onError(readableError(throwable));
+                    int status = response == null ? 0 : response.code();
+                    String failure = status > 0
+                            ? "Edge TTS 连接失败（HTTP " + status + "）"
+                            : readableError(throwable);
+                    Log.w(TAG, "TTS WebSocket failed with Edge "
+                            + edgeVersion.browserVersion + " / " + edgeVersion.gecVersion
+                            + (status > 0 ? ", HTTP " + status : ""), throwable);
+                    if (status == 401 || status == 403) {
+                        correctClock(response);
+                        versionProvider.forceRefresh(new EdgeTtsVersionProvider.Listener() {
+                            @Override
+                            public void onSuccess(EdgeTtsVersionProvider.VersionInfo version) {
+                                Log.d(TAG, "Version refreshed after HTTP " + status + ": "
+                                        + version.browserVersion + " / " + version.gecVersion);
+                                if (!cancelled.get()) {
+                                    listener.onError(failure + "，已刷新 Edge 版本");
+                                }
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                Log.w(TAG, "Version refresh after HTTP " + status
+                                        + " failed: " + message);
+                                if (!cancelled.get()) {
+                                    listener.onError(failure + "；版本刷新失败：" + message);
+                                }
+                            }
+                        });
+                    } else {
+                        listener.onError(failure);
+                    }
                 }
+            }
+
+            @Override
+            public void onClosing(WebSocket socket, int code, String reason) {
+                socket.close(code, reason);
             }
 
             @Override
             public void onClosed(WebSocket socket, int code, String reason) {
                 if (settled.compareAndSet(false, true)) {
                     timeoutHandler.removeCallbacks(timeout);
-                    listener.onError("Edge TTS 连接提前关闭");
+                    Log.w(TAG, "TTS closed: code=" + code + ", voice=" + voice
+                            + ", audioBytes=" + audio.size());
+                    listener.onError(audio.size() == 0
+                            ? "Edge 未返回音频并关闭连接（" + code + "），请刷新音色或稍后重试"
+                            : "Edge TTS 音频传输中断（" + code + "）");
                 }
             }
 
@@ -334,6 +394,7 @@ final class EdgeTtsClient {
         WebSocket socket = httpClient.newWebSocket(request, socketListener);
         socketHolder[0] = socket;
         return () -> {
+            cancelled.set(true);
             if (settled.compareAndSet(false, true)) {
                 timeoutHandler.removeCallbacks(timeout);
                 WebSocket activeSocket = socketHolder[0];
@@ -345,9 +406,9 @@ final class EdgeTtsClient {
     }
 
     void shutdown() {
+        translator.shutdown();
         httpClient.dispatcher().cancelAll();
         httpClient.dispatcher().executorService().shutdown();
-        httpClient.connectionPool().evictAll();
     }
 
     static List<Voice> curatedVoices() {
@@ -375,16 +436,15 @@ final class EdgeTtsClient {
     }
 
     static List<Voice> fallbackVoices() {
-        ArrayList<Voice> voices = new ArrayList<>(curatedVoices());
-        voices.add(new Voice("zh-CN-liaoning-XiaobeiNeural", "zh-CN-liaoning", "Female", "晓北（辽宁）"));
-        voices.add(new Voice("zh-CN-shaanxi-XiaoniNeural", "zh-CN-shaanxi", "Female", "晓妮（陕西）"));
-        voices.add(new Voice("zh-HK-HiuGaaiNeural", "zh-HK", "Female", "曉佳（粤语）"));
-        voices.add(new Voice("zh-HK-HiuMaanNeural", "zh-HK", "Female", "曉曼（粤语）"));
-        voices.add(new Voice("zh-HK-WanLungNeural", "zh-HK", "Male", "云龙（粤语）"));
-        voices.add(new Voice("zh-TW-HsiaoChenNeural", "zh-TW", "Female", "曉臻（台湾）"));
-        voices.add(new Voice("zh-TW-HsiaoYuNeural", "zh-TW", "Female", "曉雨（台湾）"));
-        voices.add(new Voice("zh-TW-YunJheNeural", "zh-TW", "Male", "云哲（台湾）"));
-        return voices;
+        return curatedVoices();
+    }
+
+    static boolean requiresTranslator(String voice) {
+        // These curated voices are supported by the Read Aloud consumer endpoint.
+        // Other curated voices require the Translator speech endpoint, as in VoiceCraft.
+        return !("zh-CN-XiaoxiaoNeural".equals(voice) || "zh-CN-XiaoyiNeural".equals(voice)
+                || "zh-CN-YunxiNeural".equals(voice) || "zh-CN-YunyangNeural".equals(voice)
+                || "zh-CN-YunjianNeural".equals(voice) || "zh-CN-YunxiaNeural".equals(voice));
     }
 
     static List<Style> styles() {
@@ -434,15 +494,18 @@ final class EdgeTtsClient {
     }
 
     private static String edgeGec() throws Exception {
-        long seconds = System.currentTimeMillis() / 1000L + 11_644_473_600L;
-        long ticks = (seconds - seconds % 300L) * 10_000_000L;
-        byte[] digest = MessageDigest.getInstance("SHA-256")
-                .digest((Long.toString(ticks) + TOKEN).getBytes(StandardCharsets.UTF_8));
-        StringBuilder hex = new StringBuilder(digest.length * 2);
-        for (byte value : digest) {
-            hex.append(String.format(Locale.ROOT, "%02X", value & 0xff));
+        return EdgeTtsGec.generate(System.currentTimeMillis() + clockOffsetMillis, TOKEN);
+    }
+
+    private static void correctClock(Response response) {
+        if (response == null) {
+            return;
         }
-        return hex.toString();
+        Date serverDate = response.headers().getDate("Date");
+        if (serverDate != null) {
+            clockOffsetMillis = serverDate.getTime() - System.currentTimeMillis();
+            Log.d(TAG, "TTS server clock offset: " + clockOffsetMillis + " ms");
+        }
     }
 
     private static String headerValue(String headers, String target) {
@@ -479,10 +542,15 @@ final class EdgeTtsClient {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
-    private static String userAgent() {
+    private String userAgent() {
+        return userAgent(versionProvider.current().browserVersion);
+    }
+
+    private static String userAgent(String browserVersion) {
+        String major = browserVersion.split("\\.")[0];
         return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                + "(KHTML, like Gecko) Chrome/" + CHROMIUM_VERSION
-                + " Safari/537.36 Edg/" + CHROMIUM_VERSION;
+                + "(KHTML, like Gecko) Chrome/" + major + ".0.0.0"
+                + " Safari/537.36 Edg/" + major + ".0.0.0";
     }
 
     private static String readableError(Throwable throwable) {

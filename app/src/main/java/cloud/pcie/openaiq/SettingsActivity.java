@@ -245,8 +245,7 @@ public final class SettingsActivity extends Activity {
 
     private void setVoiceAdapter(List<EdgeTtsClient.Voice> voices, String selectedVoice) {
         curatedVoices = voices == null || voices.isEmpty()
-                ? EdgeTtsClient.curatedVoices()
-                : new ArrayList<>(voices);
+                ? EdgeTtsClient.curatedVoices() : new ArrayList<>(voices);
         ArrayList<Object> options = new ArrayList<>();
         options.add("中文");
         options.addAll(curatedVoices);
@@ -502,38 +501,38 @@ public final class SettingsActivity extends Activity {
 
     private void save() {
         boolean sameService = sameServiceSwitch.isChecked();
-        if (sameService && !validateConnection(sharedBaseUrlInput, sharedApiKeyInput)) {
+        if (sameService && !validateOptionalUrl(sharedBaseUrlInput)) {
             return;
         }
-        if (!sameService && (!validateConnection(chatBaseUrlInput, chatApiKeyInput)
-                || !validateConnection(imageBaseUrlInput, imageApiKeyInput))) {
+        if (!sameService && (!validateOptionalUrl(chatBaseUrlInput)
+                || !validateOptionalUrl(imageBaseUrlInput))) {
             return;
         }
 
         String chatModel = selectedChatModel();
         String imageModel = selectedImageModel();
-        if (chatModel.isEmpty()) {
-            Toast.makeText(this, "请先获取并选择对话模型", Toast.LENGTH_SHORT).show();
-            (sameService ? sharedChatModelSpinner : chatModelSpinner).requestFocus();
-            return;
-        }
-        if (imageModel.isEmpty()) {
-            Toast.makeText(this, "请先获取并选择生图模型", Toast.LENGTH_SHORT).show();
-            (sameService ? sharedImageModelSpinner : imageModelSpinner).requestFocus();
-            return;
-        }
-
         String chatBaseUrl = sameService ? valueOf(sharedBaseUrlInput) : valueOf(chatBaseUrlInput);
         String chatApiKey = sameService ? valueOf(sharedApiKeyInput) : valueOf(chatApiKeyInput);
         String imageBaseUrl = sameService ? chatBaseUrl : valueOf(imageBaseUrlInput);
         String imageApiKey = sameService ? chatApiKey : valueOf(imageApiKeyInput);
         Runnable persist = () -> persistSettings(sameService, chatBaseUrl, chatApiKey,
                 imageBaseUrl, imageApiKey, chatModel, imageModel, valueOf(systemPromptInput));
-        if (!AppSettings.hasKeyViewPassword(this)) {
+        boolean hasApiKey = !chatApiKey.isEmpty() || !imageApiKey.isEmpty();
+        if (hasApiKey && !AppSettings.hasKeyViewPassword(this)) {
             showCreateKeyPasswordDialog(persist);
         } else {
             persist.run();
         }
+    }
+
+    private boolean validateOptionalUrl(EditText urlInput) {
+        String value = valueOf(urlInput);
+        if (value.isEmpty() || isValidSecureUrl(value)) {
+            return true;
+        }
+        urlInput.setError("请输入有效的 HTTPS 服务地址，或留空");
+        urlInput.requestFocus();
+        return false;
     }
 
     private void persistSettings(

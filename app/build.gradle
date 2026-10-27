@@ -10,8 +10,8 @@ android {
         applicationId "cloud.pcie.openaiq"
         minSdk 24
         targetSdk 36
-        versionCode 64
-        versionName "2.3.43"
+        versionCode 67
+        versionName "2.3.46"
         testInstrumentationRunner "cloud.pcie.openaiq.LayoutPreviewInstrumentation"
     }
 
@@ -34,4 +34,5 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:4.12.0"
     implementation "com.github.gkonovalov.android-vad:webrtc:2.0.10"
     testImplementation "junit:junit:4.13.2"
+    testImplementation "org.json:json:20240303"
 }
